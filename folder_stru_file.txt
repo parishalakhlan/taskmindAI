@@ -1,0 +1,173 @@
+
+# ✅ PROJECT_GUIDELINES.md  
+_🧠 Read this BEFORE writing any new logic or code_
+
+---
+
+## 🔷 1. ✅ Naming Rules
+
+### 🧠 Variables, Functions, State
+- Use `camelCase`: `userData`, `taskList`, `handleSubmit`
+- Never use `UserData`, `User_Data`, `Userdata`
+
+### 🧱 Models (Mongoose)
+- Model Names: `PascalCase` → `User`, `Task`
+- File Names: `lowercase.dash.js` → `user.model.js`
+
+### 📦 Components
+- File/Component Name: `PascalCase` → `TaskCard.jsx`, `UserProfile.jsx`
+- Props/State: `camelCase` → `user`, `task`, `setIsLoading`
+
+---
+
+## 🔷 2. ✅ ID Handling (`_id` vs `id`)
+
+| Layer        | Always Use        | Example              |
+|--------------|-------------------|----------------------|
+| MongoDB      | `_id`             | `task._id`           |
+| Backend API  | Keep `_id` as is  | `res.json({ task })` |
+| Frontend     | Access `_id` directly | `task._id`      |
+
+> ⚠️ Do **not rename** `_id` to `id` in just one layer.
+
+---
+
+## 🔷 3. ✅ API Planning Before Writing Logic
+
+**ALWAYS write this first before creating controller/route:**
+
+- Endpoint: `/api/tasks/:id`
+- Method: `GET`, `POST`, `PUT`, `DELETE`
+- Requires Auth? `Yes / No`
+- Request Body:
+  ```json
+  {
+    "title": "Read Book",
+    "description": "Read 10 pages"
+  }
+  ```
+- Response Structure:
+  ```json
+  {
+    "success": true,
+    "task": {
+      "_id": "123abc",
+      "title": "Read Book"
+    }
+  }
+  ```
+
+---
+
+## 🔷 4. ✅ Folder & File Structure (Stick to this)
+
+```
+/backend
+  /models          → task.model.js
+  /controllers     → taskController.js
+  /routes          → task.routes.js
+  /middlewares     → authMiddleware.js
+
+/frontend
+  /components      → TaskCard.jsx
+  /pages           → tasks.jsx
+  /services        → taskService.js
+  /context         → AuthContext.js
+```
+
+---
+
+## 🔷 5. ✅ Logic Checklist (Backend or Frontend)
+
+### ✅ Before Writing Any Logic:
+- [ ] Have I defined the required data fields?
+- [ ] Do I know where this data comes from and where it goes?
+- [ ] Am I using consistent naming (`user`, `task`, not `UserData`, `data` etc.)?
+- [ ] If using `_id`, is it consistently `_id` everywhere?
+
+---
+
+## 🔷 6. ✅ Common Naming Examples
+
+| Concept        | Use               |
+|----------------|------------------|
+| Task ID        | `task._id`       |
+| User Object    | `user.name`      |
+| Form Data      | `newTask`, `formData` |
+| Response       | `{ user, task, token }` |
+| Component Prop | `<TaskCard task={task} />` |
+
+---
+
+## 🔷 7. ✅ Auth & Token Flow (JWT)
+
+1. Login: `/api/auth/login` → returns `{ token, user }`
+2. Save token in localStorage
+3. Send token in headers for protected routes
+   ```
+   Authorization: Bearer <token>
+   ```
+
+---
+
+## 🔷 8. ✅ Code Cleanliness
+
+- [ ] Use `try-catch` in async logic
+- [ ] Format code with Prettier
+- [ ] Follow naming rules above
+- [ ] Return clear API messages (not just raw DB errors)
+
+---
+
+## 🔷 9. 🧼 Naming Anti-Patterns (🚫 NEVER DO THIS)
+
+| ❌ Wrong           | ✅ Correct          |
+|--------------------|---------------------|
+| `UserData`         | `user`              |
+| `res.data.userData`| `res.data.user`     |
+| `taskId` (for DB ID)| `task._id`         |
+| `User` (prop name) | `user`              |
+| `getdata`          | `fetchUserData()`   |
+
+---
+
+## 🔷 10. ✅ Quick Reminder Before Writing Logic
+
+✔ Am I using camelCase everywhere?  
+✔ Am I keeping `_id` instead of changing to `id`?  
+✔ Am I writing consistent object keys in request/response?  
+✔ Is my folder name correct (lowercase)?  
+✔ Am I breaking things into components/controllers clearly?
+
+---
+
+## 🔚 Final Note
+
+> 🧠 **This guide saves your future self from hours of confusion.**  
+> Always read this before writing new logic or introducing a new component, API, or DB field.
+
+---
+
+### ✅ Ready to Code?  
+> Great! You’ve passed the structure check.  
+> Write clean, consistent code 🚀
+
+
+
+
+
+Model: PascalCase (User, Task)
+Collection: plural lowercase (users, tasks)
+
+Field names: camelCase only (firstName, isAdmin)
+References: lowercase (user, task)
+Use default _id — do not rename to id
+Use timestamps: true in all schemas
+
+Boolean fields: prefix with is/has (isAdmin, hasPaid)
+
+Validate strings: trim, lowercase, regex for email
+
+File names: lowercase-dash.js (user.model.js, task.routes.js)
+
+Avoid: UserId → use user, TaskRef → task, created → createdAt

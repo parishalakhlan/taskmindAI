@@ -1,0 +1,8 @@
+// ❌ Wrong - only storing token
+const response = await login(credentials);
+localStorage.setItem('token', response.token);
+
+// ✅ Correct - storing both token and user
+const response = await login(credentials);
+localStorage.setItem('token', response.token);
+localStorage.setItem('user', JSON.stringify(response.user)); // or however you store user data
