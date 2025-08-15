@@ -1,5 +1,5 @@
 "use client";
-
+import Link from "next/link";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -72,7 +72,12 @@ export default function TasksPage() {
         credentials: "include",
       });
 
-      if (!res.ok) throw new Error("Delete failed");
+      if (!res.ok) {
+        const errorData = await res.json(); // Parse error response
+        throw new Error(
+          errorData.message || `Delete failed with status ${res.status}`
+        );
+      }
 
       // Remove task from UI
       setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
@@ -96,13 +101,13 @@ export default function TasksPage() {
           {tasks.map((task) => (
             <li
               key={task._id}
-              className="bg-white p-4 shadow rounded border border-gray-200"
+              className="bg-white p-4 shadow rounded border text-pink-700 border-gray-200"
             >
               <h3 className="text-lg font-semibold text-pink-600">
                 {task.title}
               </h3>
               <p className="text-sm text-gray-600">{task.description}</p>
-              <p className="text-xs text-gray-400 text-orange-600">
+              <p className="text-xs  text-orange-600">
                 Created: {new Date(task.createdAt).toLocaleString()}
               </p>
               <button
@@ -116,6 +121,11 @@ export default function TasksPage() {
           ))}
         </ul>
       )}
+      <Link href="/tasks/new">
+        <button className="bg-gray-400 text-yellow-700 font-bold py-2 px-4 rounded">
+          Create New Task
+        </button>
+      </Link>
     </DashboardLayout>
   );
 }

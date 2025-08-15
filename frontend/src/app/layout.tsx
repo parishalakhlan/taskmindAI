@@ -1,7 +1,7 @@
 // src/app/layout.tsx
 "use client";
 import { AuthProvider } from "@/context/AuthProvider";
-
+import { Toaster } from "react-hot-toast";
 import "./globals.css";
 
 import { ReactNode } from "react";
@@ -13,7 +13,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <AuthProvider>
           {" "}
-          <TaskProvider>{children}</TaskProvider>
+          <TaskProvider>
+            <Toaster position="top-right" />
+            {children}
+          </TaskProvider>
         </AuthProvider>
       </body>
     </html>

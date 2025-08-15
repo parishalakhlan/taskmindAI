@@ -12,24 +12,33 @@ const taskSchema = new mongoose.Schema({
     trim: true,
     maxlength: [500, "Description cannot exceed 500 characters"],
   },
-  dueDate: {
+  deadline: {
+    // Changed from dueDate to deadline
     type: Date,
     validate: {
       validator: function (value) {
         return value > Date.now();
       },
-      message: "Due date must be in the future",
+      message: "Deadline must be in the future", // Updated message
     },
   },
   priority: {
     type: String,
-    enum: ["low", "medium", "high"],
+    enum: ["low", "medium", "high", "Low", "Medium", "High"],
     default: "medium",
   },
   status: {
     type: String,
     enum: ["pending", "in-progress", "completed"],
     default: "pending",
+  },
+  completed: {
+    type: Boolean,
+    default: false,
+  },
+  completedAt: {
+    type: Date,
+    default: null,
   },
   createdAt: {
     type: Date,

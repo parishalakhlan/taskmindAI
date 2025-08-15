@@ -22,7 +22,9 @@ const profileRoutes = require("./routes/profileRoutes");
 
 // Initialize Express app
 const app = express();
+app.use(express.urlencoded({ extended: true }));
 
+app.use(express.json());
 // Middleware
 app.use(
   cors({
@@ -39,7 +41,7 @@ app.use(
 );
 app.use(helmet());
 app.use(morgan("dev"));
-app.use(express.json());
+
 app.use(cookieParser());
 app.use("/api/v1/nlp", require("./routes/nlpRoutes"));
 // Health check route

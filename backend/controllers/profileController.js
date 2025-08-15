@@ -72,7 +72,22 @@ exports.getAllProfiles = catchAsync(async (req, res, next) => {
     },
   });
 });
+// Add this to your profileController
+exports.updateBasicInfo = catchAsync(async (req, res) => {
+  const user = await User.findByIdAndUpdate(
+    req.user.id,
+    {
+      name: req.body.name,
+      email: req.body.email,
+    },
+    { new: true }
+  );
 
+  res.status(200).json({
+    status: "success",
+    data: { user },
+  });
+});
 // Get profile by user ID
 exports.getProfileByUserId = catchAsync(async (req, res, next) => {
   const profile = await Profile.findOne({ user: req.params.userId }).populate(

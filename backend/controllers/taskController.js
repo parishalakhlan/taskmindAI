@@ -59,25 +59,13 @@ exports.createTask = async (req, res, next) => {
 
 // ... (keep other methods the same but update their logging)
 exports.getAllTasks = async (req, res, next) => {
-  console.log("GET /api/v1/tasks called");
-  console.log("User:", req.user);
-  console.log("User ID type:", typeof req.user._id);
-  console.log("User ID value:", req.user._id);
   try {
     // Ensure user ID exists
     if (!req.user?._id) {
       throw new AppError("User authentication required", 401);
     }
-    console.log("About to query tasks for user:", req.user._id);
-    console.log("Task model exists:", !!Task);
-    console.log("Task model type:", typeof Task);
-    console.log("Task.find function:", typeof Task.find);
-    console.log("Task model name:", Task.modelName);
-    console.log("Task collection name:", Task.collection.name);
+
     const tasks = await Task.find({ user: req.user._id });
-    console.log("All tasks count:", tasks.length);
-    console.log("Tasks found:", tasks.length);
-    console.log("Tasks:", tasks);
 
     res.status(200).json({
       status: "success",
@@ -122,12 +110,13 @@ exports.deleteTask = async (req, res, next) => {
   console.log("deleteTask function backend");
   try {
     console.log("[DEBUG] Delete Task - Start");
-    console.log(`[DEBUG] Request Params ID: ${req.params.id}`);
+    logger.info(`Deleted task ID: ${req.params.id}`);
     const task = await Task.findByIdAndDelete(req.params.id);
 
     handleNotFound(task, res);
 
-    logger.log(`Deleted task ID: ${req.params.id}`);
+    logger.info(`Deleted task ID: ${req.params.id}`);
+    console.log("backend working fine");
     res.status(204).json({
       status: "success",
       data: null,
@@ -137,36 +126,75 @@ exports.deleteTask = async (req, res, next) => {
   }
 };
 exports.getTaskSuggestions = async (req, res, next) => {
+  console.log("hitted ai f");
   try {
-    // 1. Get the current task
-    const task = await Task.findById(req.params.id);
-    if (!task) {
-      return next(new AppError("No task found with that ID", 404));
+    // Get data from request body instead of database
+    const { title } = req.body;
+
+    if (!title) {
+      return next(new AppError("Task title is required for suggestions", 400));
     }
 
-    // 2. Get AI suggestions
+    // Get AI suggestions based on form input
     const suggestions = await ollama.generate(`
-      Based on this task: "${task.title}"
-      Description: "${task.description}"
-      Priority: ${task.priority}
+      Based on this task: "${title}"
+    
       
       Suggest 3 related sub-tasks or improvements as JSON array:
-      [{
+      [{ 
         "title": "...",
         "priority": "low|medium|high",
         "reason": "..."
       }]
     `);
 
-    // 3. Format response
     res.status(200).json({
       status: "success",
       data: {
-        originalTask: task,
         suggestions: suggestions,
       },
     });
   } catch (err) {
     next(err);
+  }
+};
+exports.toggleTaskCompletion = async (req, res, next) => {
+  console.log("toggle function called");
+  try {
+    // 1. Get the task
+    const task = await Task.findById(req.params.id);
+
+    if (!task) {
+      return res.status(404).json({
+        status: "fail",
+        message: "Task not found",
+      });
+    }
+
+    // 2. Toggle completion status
+    task.completed = !task.completed;
+    task.completedAt = task.completed ? new Date() : null;
+
+    // 3. Save with validation
+    await task.save({ validateBeforeSave: true });
+
+    // 4. Respond with updated task
+    res.status(200).json({
+      status: "success",
+      data: { task },
+    });
+
+    logger.info(`Task ${task._id} completion toggled to ${task.completed}`);
+  } catch (err) {
+    logger.error("Task completion toggle failed", {
+      error: err.message,
+      taskId: req.params.id,
+    });
+
+    // Send error response
+    res.status(500).json({
+      status: "error",
+      message: "Failed to toggle task completion",
+    });
   }
 };

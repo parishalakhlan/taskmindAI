@@ -28,7 +28,7 @@ router.get("/", profileController.getAllProfiles);
 // @desc    Get profile by user ID
 // @access  Public
 router.get("/user/:userId", profileController.getProfileByUserId);
-
+router.patch("/basic", profileController.updateBasicInfo);
 // @route   DELETE api/profile
 // @desc    Delete profile and user
 // @access  Private

@@ -61,14 +61,7 @@ class OllamaService {
     }
   }
   async streamGenerate(prompt, res) {
-    const config = {
-      responseType: "stream",
-      headers: { "Content-Type": "application/json" },
-    };
-
     try {
-      logger.info(`Streaming prompt to Ollama: ${prompt.slice(0, 100)}...`);
-
       const response = await axios.post(
         `${this.baseURL}/generate`,
         {
@@ -80,30 +73,58 @@ class OllamaService {
             num_predict: 500,
           },
         },
-        config
+        { responseType: "stream" }
       );
+
+      let accumulated = "";
 
       response.data.on("data", (chunk) => {
         const text = chunk.toString();
-        res.write(`data: ${text}\n\n`);
+
+        try {
+          const parsed = JSON.parse(text);
+          if (parsed.response) {
+            accumulated += parsed.response;
+
+            // Try to extract a full JSON array if it's complete
+            const match = accumulated.match(/\[.*?\]/s);
+            if (match) {
+              const suggestions = JSON.parse(match[0]);
+              for (const item of suggestions) {
+                res.write(
+                  `data: ${JSON.stringify({ response: item.title })}\n\n`
+                );
+              }
+
+              res.write("data: end\n\n");
+              res.end();
+            }
+          }
+        } catch (err) {
+          // Chunk might be incomplete JSON — ignore for now
+          console.log("⚠️ Incomplete chunk, skipping:", text);
+        }
       });
 
       response.data.on("end", () => {
-        res.write("event: end\ndata: end\n\n");
-        res.end();
+        if (!res.writableEnded) {
+          res.write("data: end\n\n");
+          res.end();
+        }
       });
 
       response.data.on("error", (err) => {
-        logger.error("Streaming error:", err);
-        res.write("event: error\ndata: AI streaming failed\n\n");
+        console.error("Streaming error:", err);
+        res.write("data: error\n\n");
         res.end();
       });
     } catch (err) {
-      logger.error(`Streaming Ollama failed: ${err.message}`);
-      res.write("event: error\ndata: AI request failed\n\n");
+      console.error("Streaming Ollama failed:", err);
+      res.write("data: error\n\n");
       res.end();
     }
   }
+
   // Generate with schema enforcement
   async generateJSON(prompt, schema) {
     const strictPrompt = `
@@ -120,6 +141,22 @@ Input: ${prompt}
     const result = await this.generate(strictPrompt);
     cache.set(cacheKey, result);
     return result;
+  }
+
+  // Add this method inside your OllamaService class
+  async suggestTasks(titles) {
+    const prompt = `
+    Based on this task: "${titles[0]}"
+   
+    Suggest 3 related sub-tasks or improvements as JSON array:
+    [{ 
+      "title": "...",
+      "priority": "low|medium|high",
+      "reason": "..."
+    }]
+  `;
+
+    return await this.generate(prompt);
   }
 }
 
