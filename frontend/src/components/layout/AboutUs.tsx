@@ -92,6 +92,8 @@ export default function AboutUs() {
         <NextImage
           src="https://www.svgrepo.com/show/374026/nextjs.svg"
           alt="Next.js"
+          width={20}
+          height={20}
           className="h-6 w-6"
         />
       ),
@@ -103,6 +105,8 @@ export default function AboutUs() {
           src="https://www.svgrepo.com/show/452092/react.svg"
           alt="React"
           className="h-6 w-6"
+          width={20}
+          height={20}
         />
       ),
     },
@@ -112,6 +116,8 @@ export default function AboutUs() {
         <NextImage
           src="https://www.svgrepo.com/show/374146/typescript.svg"
           alt="TypeScript"
+          width={20}
+          height={20}
           className="h-6 w-6"
         />
       ),
@@ -122,6 +128,8 @@ export default function AboutUs() {
         <NextImage
           src="https://www.svgrepo.com/show/374118/tailwind.svg"
           alt="Tailwind CSS"
+          width={20}
+          height={20}
           className="h-6 w-6"
         />
       ),
@@ -132,6 +140,8 @@ export default function AboutUs() {
         <NextImage
           src="https://www.svgrepo.com/show/378877/node-js.svg"
           alt="Node.js"
+          width={20}
+          height={20}
           className="h-6 w-6"
         />
       ),
@@ -142,6 +152,8 @@ export default function AboutUs() {
         <NextImage
           src="https://www.svgrepo.com/show/373595/graphql.svg"
           alt="GraphQL"
+          width={20}
+          height={20}
           className="h-6 w-6"
         />
       ),
@@ -152,6 +164,8 @@ export default function AboutUs() {
         <NextImage
           src="https://www.svgrepo.com/show/373595/graphql.svg"
           alt="GraphQL"
+          width={20}
+          height={20}
           className="h-6 w-6"
         />
       ),
@@ -162,6 +176,8 @@ export default function AboutUs() {
         <NextImage
           src="https://www.svgrepo.com/show/373845/mongodb.svg"
           alt="MongoDB"
+          width={20}
+          height={20}
           className="h-6 w-6"
         />
       ),

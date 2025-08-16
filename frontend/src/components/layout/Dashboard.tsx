@@ -102,30 +102,17 @@ export const Dashboard: React.FC = () => {
   };
 
   // Variants for individual chart bars
-  // Update the barVariants to use proper types
   const barVariants = {
     hidden: { height: 0 },
     visible: {
-      height: "100%", // Use fixed value instead of CSS variable
+      height: "100%",
       transition: {
         duration: 0.8,
-        ease: "easeOut" as const, // Add type assertion
-      },
-    },
-  };
-
-  const doughnutVariants = {
-    hidden: { scale: 0.8, opacity: 0 },
-    visible: {
-      scale: 1,
-      opacity: 1,
-      transition: {
-        duration: 0.6,
         ease: "easeOut" as const,
       },
     },
   };
-  // Fixed function to get local date string (YYYY-MM-DD format)
+
   const getLocalDateString = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
@@ -136,19 +123,6 @@ export const Dashboard: React.FC = () => {
   // Group tasks by day
   const groupTasksByDay = () => {
     const weekDays = getCurrentWeekDays();
-
-    console.log(
-      "Week days:",
-      weekDays.map((d) => getLocalDateString(d))
-    ); // Debug log
-    console.log(
-      "Tasks with dates:",
-      tasks.map((t) => ({
-        id: t._id,
-        createdAt: t.createdAt,
-        localDate: getLocalDateString(new Date(t.createdAt)),
-      }))
-    ); // Debug log
 
     return weekDays.map((day) => {
       const dayString = getLocalDateString(day);
@@ -161,14 +135,19 @@ export const Dashboard: React.FC = () => {
         date: day,
         dayName: day.toLocaleDateString("en-US", { weekday: "short" }),
         taskCount: tasksForDay.length,
-        tasksForDay: tasksForDay, // Add this for debugging
+        completedCount: tasksForDay.filter((task) => task.completed).length,
+        tasksForDay,
         isToday: day.toDateString() === new Date().toDateString(),
       };
     });
   };
 
   const weekDaysWithTasks = groupTasksByDay();
-  /*
+  const maxValue = Math.max(
+    ...weekDaysWithTasks.map((day) => day.taskCount),
+    1
+  );
+
   const ProgressChart = ({ percent }: { percent: number }) => {
     const [hoveredSection, setHoveredSection] = useState<
       "completed" | "undone" | null
@@ -257,7 +236,8 @@ export const Dashboard: React.FC = () => {
         )}
       </div>
     );
-  }; */
+  };
+
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
@@ -265,13 +245,13 @@ export const Dashboard: React.FC = () => {
       scale: 1.08,
       boxShadow:
         "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-    }, // Tailwind shadow-lg equivalent
+    },
     tap: { scale: 0.95 },
   };
 
   interface SidebarItem {
     name: string;
-    icon: React.ElementType; // The icon is a React component
+    icon: React.ElementType;
     notifications: number;
     current: boolean;
     link: string;
@@ -292,7 +272,6 @@ export const Dashboard: React.FC = () => {
       current: false,
       link: "/tasks",
     },
-
     {
       name: "Profile",
       icon: User2Icon,
@@ -374,7 +353,6 @@ export const Dashboard: React.FC = () => {
           animate="visible"
           whileHover="hover"
         >
-          {/* Animated Avatar Container */}
           <motion.div
             className="relative w-14 h-14 rounded-full flex items-center justify-center shrink-0"
             variants={contentVariants}
@@ -387,7 +365,6 @@ export const Dashboard: React.FC = () => {
             <UserCircle className="w-10 h-10 text-white/90 z-10" />
           </motion.div>
 
-          {/* User Info Content - Improved for all screens */}
           <div className="flex-1 min-w-0 space-y-2">
             <motion.div
               className="flex flex-col sm:flex-row sm:items-baseline gap-2 sm:gap-3"
@@ -416,7 +393,6 @@ export const Dashboard: React.FC = () => {
                 </motion.span>
               </div>
 
-              {/* Mobile-only wave emoji */}
               <motion.span
                 className="text-xl sm:hidden self-start"
                 animate={{
@@ -433,7 +409,6 @@ export const Dashboard: React.FC = () => {
               </motion.span>
             </motion.div>
 
-            {/* Email with better wrapping */}
             <motion.div
               className="flex items-center gap-2 text-sm text-gray-600"
               variants={contentVariants}
@@ -444,7 +419,6 @@ export const Dashboard: React.FC = () => {
               </p>
             </motion.div>
 
-            {/* Status badge with animation */}
             <motion.div
               className="flex gap-2 flex-wrap"
               variants={contentVariants}
@@ -464,7 +438,6 @@ export const Dashboard: React.FC = () => {
             </motion.div>
           </div>
 
-          {/* Hover effects */}
           <div className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"></div>
           <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 to-blue-500 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
         </motion.div>
@@ -474,7 +447,6 @@ export const Dashboard: React.FC = () => {
           initial="hidden"
           animate="visible"
         >
-          {/* Header section with title and date */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 md:pb-6 border-b border-gray-200 mb-6">
             <motion.h2
               className="text-2xl md:text-3xl font-extrabold tracking-tight mb-2 sm:mb-0 text-gray-800"
@@ -493,7 +465,6 @@ export const Dashboard: React.FC = () => {
             </motion.div>
           </div>
 
-          {/* Main content with charts - Added gap and motion */}
           <motion.div
             className="grid grid-cols-1 lg:grid-cols-3 gap-6 md:gap-8 mt-4"
             initial="hidden"
@@ -508,7 +479,6 @@ export const Dashboard: React.FC = () => {
               },
             }}
           >
-            {/* Bar chart column */}
             <motion.div
               className="lg:col-span-2"
               variants={{
@@ -525,14 +495,9 @@ export const Dashboard: React.FC = () => {
               }}
             >
               <div className="relative h-64 md:h-80 w-full pr-4 md:pr-6 pl-8">
-                {/* Y-axis and grid lines */}
                 <div className="absolute inset-y-0 left-0 flex flex-col justify-between text-gray-500 text-xs md:text-sm py-4 md:py-6 w-8">
                   {[0, 0.33, 0.66, 1].map((value, i) => {
-                    const maxTasks = Math.max(
-                      1,
-                      ...weekDaysWithTasks.map((day) => day.taskCount)
-                    );
-                    const labelValue = Math.round(maxTasks * value);
+                    const labelValue = Math.round(maxValue * value);
                     return (
                       <React.Fragment key={i}>
                         <span
@@ -555,17 +520,10 @@ export const Dashboard: React.FC = () => {
                   })}
                 </div>
 
-                {/* Bars */}
                 <div className="absolute inset-0 flex items-end justify-around pl-8 md:pl-10 pb-6">
                   {weekDaysWithTasks.map((day, index) => {
-                    const completedCount = day.tasksForDay.filter(
-                      (task) => task.completed
-                    ).length;
-                    const createdCount = day.taskCount;
-                    const maxValue = Math.max(
-                      1,
-                      ...weekDaysWithTasks.map((d) => d.taskCount)
-                    );
+                    const hasTasks = day.taskCount > 0;
+                    const heightMultiplier = hasTasks ? 0.8 : 0; // Reduced height multiplier for better visibility
 
                     return (
                       <motion.div
@@ -579,38 +537,64 @@ export const Dashboard: React.FC = () => {
                         }}
                       >
                         <div className="flex w-full items-end justify-center h-full space-x-1 sm:space-x-2">
-                          <motion.div
-                            className="w-1/2 bg-blue-500 rounded-t-md relative hover:bg-blue-400 transition-colors duration-200"
-                            style={{
-                              height: `${(createdCount / maxValue) * 100}%`,
-                            }}
-                            initial={{ height: 0 }}
-                            animate={{
-                              height: `${(createdCount / maxValue) * 100}%`,
-                            }}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
-                            variants={barVariants}
-                          >
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white text-gray-800 text-[10px] md:text-xs px-2 py-1 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-gray-200">
-                              Created: {createdCount}
-                            </div>
-                          </motion.div>
-                          <motion.div
-                            className="w-1/2 bg-rose-500 rounded-t-md relative hover:bg-rose-400 transition-colors duration-200"
-                            style={{
-                              height: `${(completedCount / maxValue) * 100}%`,
-                            }}
-                            initial={{ height: 0 }}
-                            animate={{
-                              height: `${(completedCount / maxValue) * 100}%`,
-                            }}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
-                            variants={barVariants}
-                          >
-                            <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white text-gray-800 text-[10px] md:text-xs px-2 py-1 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-gray-200">
-                              Completed: {completedCount}
-                            </div>
-                          </motion.div>
+                          {hasTasks && (
+                            <>
+                              <motion.div
+                                className="w-1/2 bg-blue-500 rounded-t-md relative hover:bg-blue-400 transition-colors duration-200"
+                                style={{
+                                  height: `${
+                                    (day.taskCount / maxValue) *
+                                    100 *
+                                    heightMultiplier
+                                  }%`,
+                                  minHeight: day.taskCount > 0 ? "4px" : "0px",
+                                }}
+                                initial={{ height: 0 }}
+                                animate={{
+                                  height: `${
+                                    (day.taskCount / maxValue) *
+                                    100 *
+                                    heightMultiplier
+                                  }%`,
+                                }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
+                                variants={barVariants}
+                              >
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white text-gray-800 text-[10px] md:text-xs px-2 py-1 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-gray-200">
+                                  Created: {day.taskCount}
+                                </div>
+                              </motion.div>
+                              <motion.div
+                                className="w-1/2 bg-rose-500 rounded-t-md relative hover:bg-rose-400 transition-colors duration-200"
+                                style={{
+                                  height: `${
+                                    (day.completedCount / maxValue) *
+                                    100 *
+                                    heightMultiplier
+                                  }%`,
+                                  minHeight:
+                                    day.completedCount > 0 ? "4px" : "0px",
+                                }}
+                                initial={{ height: 0 }}
+                                animate={{
+                                  height: `${
+                                    (day.completedCount / maxValue) *
+                                    100 *
+                                    heightMultiplier
+                                  }%`,
+                                }}
+                                transition={{ duration: 0.8, ease: "easeOut" }}
+                                variants={barVariants}
+                              >
+                                <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white text-gray-800 text-[10px] md:text-xs px-2 py-1 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-gray-200">
+                                  Completed: {day.completedCount}
+                                </div>
+                              </motion.div>
+                            </>
+                          )}
+                          {!hasTasks && (
+                            <div className="w-full h-0.5 bg-gray-200 rounded-full"></div>
+                          )}
                         </div>
                         <motion.div
                           className={`mt-2 text-xs md:text-sm ${
@@ -637,7 +621,6 @@ export const Dashboard: React.FC = () => {
               </div>
             </motion.div>
 
-            {/* Doughnut chart column */}
             <motion.div
               className="flex flex-col items-center p-6 bg-gray-50 rounded-xl lg:col-span-1 border border-gray-200"
               variants={{
@@ -656,31 +639,10 @@ export const Dashboard: React.FC = () => {
               whileHover={{ scale: 1.01 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              {/* Doughnut chart */}
-              <motion.div
-                className="relative w-40 h-40 md:w-48 md:h-48 mb-8 cursor-pointer"
-                variants={doughnutVariants}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <div
-                  className="w-full h-full rounded-full transition-all duration-300"
-                  style={{
-                    background: `conic-gradient(#f43f5e ${completionPercentage}%, #3b82f6 ${completionPercentage}%)`,
-                    boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
-                  }}
-                ></div>
-                <div className="absolute inset-6 bg-white rounded-full flex flex-col items-center justify-center shadow-sm border border-gray-200">
-                  <span className="text-3xl md:text-4xl font-bold text-gray-800">
-                    {completionPercentage}%
-                  </span>
-                  <ClipboardList className="w-8 h-8 text-gray-400 mt-2" />
-                </div>
-              </motion.div>
+              <ProgressChart percent={completionPercentage} />
 
-              {/* Legend with interactive elements */}
               <motion.div
-                className="flex flex-col sm:flex-row sm:space-x-8 space-y-2 sm:space-y-0 text-sm w-full justify-center"
+                className="flex flex-col sm:flex-row sm:space-x-8 space-y-2 sm:space-y-0 text-sm w-full justify-center mt-4"
                 variants={itemVariants}
               >
                 <motion.div
@@ -706,7 +668,6 @@ export const Dashboard: React.FC = () => {
                 </motion.div>
               </motion.div>
 
-              {/* Additional stats */}
               <motion.div
                 className="mt-6 text-sm text-gray-600 text-center"
                 variants={itemVariants}
@@ -738,7 +699,6 @@ export const Dashboard: React.FC = () => {
             </motion.div>
           </motion.div>
 
-          {/* Calendar section with proper spacing and motion */}
           <motion.div
             className="bg-white rounded-2xl shadow-lg p-5 sm:p-6 border border-gray-200 mt-6"
             variants={{
@@ -756,7 +716,6 @@ export const Dashboard: React.FC = () => {
             }}
             whileHover={{ scale: 1.005 }}
           >
-            {/* Compact Header Section */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
               <div>
                 <h3 className="text-xl sm:text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-800">
@@ -780,7 +739,6 @@ export const Dashboard: React.FC = () => {
               </motion.div>
             </div>
 
-            {/* Compact Weekly Task Display - Reduced vertical space */}
             <div className="w-full overflow-x-auto pb-2 -mx-1 px-1">
               <div className="flex justify-between min-w-[400px] gap-1">
                 {weekDaysWithTasks.map(
@@ -794,15 +752,15 @@ export const Dashboard: React.FC = () => {
                       whileTap={{ scale: 0.95 }}
                       transition={{ delay: index * 0.05 }}
                       className={`
-                flex flex-col items-center justify-center p-2 rounded-lg cursor-pointer
-                flex-shrink-0 w-[calc(14.28%-0.25rem)] min-w-[40px]
-                transition-all duration-200 ease-in-out
-                ${
-                  isToday
-                    ? "bg-blue-600 text-white shadow-md ring-1 ring-blue-400"
-                    : "bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-200"
-                }
-              `}
+                        flex flex-col items-center justify-center p-2 rounded-lg cursor-pointer
+                        flex-shrink-0 w-[calc(14.28%-0.25rem)] min-w-[40px]
+                        transition-all duration-200 ease-in-out
+                        ${
+                          isToday
+                            ? "bg-blue-600 text-white shadow-md ring-1 ring-blue-400"
+                            : "bg-gray-100 hover:bg-gray-200 text-gray-600 border border-gray-200"
+                        }
+                      `}
                     >
                       <span className="text-sm font-medium">
                         {dayName.charAt(0)}
@@ -810,13 +768,13 @@ export const Dashboard: React.FC = () => {
                       {taskCount > 0 && (
                         <span
                           className={`
-                    mt-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold
-                    ${
-                      isToday
-                        ? "bg-white text-blue-600"
-                        : "bg-blue-500 text-white"
-                    }
-                  `}
+                            mt-1 px-1.5 py-0.5 rounded-full text-[9px] font-bold
+                            ${
+                              isToday
+                                ? "bg-white text-blue-600"
+                                : "bg-blue-500 text-white"
+                            }
+                          `}
                         >
                           {taskCount}
                         </span>
