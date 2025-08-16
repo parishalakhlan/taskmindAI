@@ -4,6 +4,7 @@ import React, {
   useState,
   useEffect,
   ReactNode,
+  useCallback,
 } from "react";
 import { toast } from "react-hot-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -100,7 +101,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     return new Date(dateString).toLocaleDateString("en-US", options);
   };
   // Fetch Tasks
-  const fetchTasks = async (): Promise<void> => {
+  const fetchTasks = useCallback(async (): Promise<void> => {
     if (!token) return;
 
     setLoading(true);
@@ -126,7 +127,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   // Create Task
   const createTask = async (taskData: CreateTaskData): Promise<Task | null> => {
@@ -166,9 +167,9 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       });
 
       return newTask;
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error creating task:", err);
-      toast.error(err.message || "Failed to create task");
+      toast.error(err instanceof Error ? err.message : "Failed to create task");
       return null;
     }
   };
@@ -196,13 +197,19 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
       if (!res.ok) throw new Error("Update failed");
 
-      const data = await res.json();
-      const updatedTask = data.data?.task;
-
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
           task._id === id
-            ? { ...task, ...updates, updatedAt: new Date().toISOString() }
+            ? {
+                ...task,
+                ...updates,
+                updatedAt: new Date().toISOString(),
+                priority: updates.priority as
+                  | "High"
+                  | "Medium"
+                  | "Low"
+                  | undefined,
+              }
             : task
         )
       );
@@ -356,7 +363,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     if (token) {
       fetchTasks();
     }
-  }, [token]);
+  }, [token, fetchTasks]);
 
   // Context value
   const contextValue: TaskContextType = {

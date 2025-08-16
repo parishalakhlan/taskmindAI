@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import NextImage from "next/image";
+
 import Link from "next/link";
 
 export const Navbar = () => {
@@ -21,12 +21,20 @@ export const Navbar = () => {
     open: {
       opacity: 1,
       x: 0,
-      transition: { type: "spring", stiffness: 300, damping: 30 },
+      transition: {
+        type: "spring" as const, // Add this
+        stiffness: 300,
+        damping: 30,
+      },
     },
     closed: {
       opacity: 0,
       x: "100%",
-      transition: { type: "spring", stiffness: 300, damping: 30 },
+      transition: {
+        type: "spring" as const, // Add this
+        stiffness: 300,
+        damping: 30,
+      },
     },
   };
 
@@ -39,7 +47,11 @@ export const Navbar = () => {
             className="w-10 h-10 bg-rose-500 rounded-lg flex items-center justify-center"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ type: "spring", stiffness: 260, damping: 20 }}
+            transition={{
+              type: "spring" as const,
+              stiffness: 260,
+              damping: 20,
+            }}
           >
             <span className="font-bold text-light-blue text-xl">T</span>
           </motion.div>

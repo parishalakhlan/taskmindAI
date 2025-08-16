@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import NextImage from "next/image";
 // Main Sign Up component
 export const Signup = () => {
   // State to manage input values and password visibility
@@ -243,7 +244,7 @@ export const Signup = () => {
 
       {/* Right side with the image */}
       <div className="hidden lg:block lg:w-1/2 relative">
-        <img
+        <NextImage
           src="https://placehold.co/1000x1200/edf5f8/808080?text=Placeholder+Image"
           alt="Abstract background"
           className="w-full h-full object-cover"

@@ -79,7 +79,7 @@ export default function ProfilePage() {
     } finally {
       setLoading(false);
     }
-  }, [token, authUser?._id, setProfile]);
+  }, [token, authUser, setProfile]);
   useEffect(() => {
     if (token && authUser?._id) fetchProfile();
   }, [token, authUser?._id, fetchProfile]);
@@ -208,11 +208,9 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <DashboardLayout>
-        <div className="flex justify-center items-center h-64">
-          <p className="text-lg text-gray-600">Loading profile...</p>
-        </div>
-      </DashboardLayout>
+      <div className="flex justify-center items-center h-64">
+        <p className="text-lg text-gray-600">Loading profile...</p>
+      </div>
     );
   }
 

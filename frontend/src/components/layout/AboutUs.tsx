@@ -2,21 +2,17 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import NextImage from "next/image";
+import { FaGithub, FaLinkedin } from "react-icons/fa";
 import {
   Briefcase,
-  GitFork,
   Code,
   GraduationCap,
-  Mail,
-  Linkedin,
-  Github,
   BarChart,
   User,
   ExternalLink,
   Loader2,
-  Calendar,
   Layers,
-  BellRing,
   CheckCircle2,
 } from "lucide-react";
 
@@ -27,11 +23,6 @@ type Skill = {
 };
 
 // Define a type for a feature
-type Feature = {
-  name: string;
-  description: string;
-  icon: React.ReactNode;
-};
 
 // Define a type for a link
 type Link = {
@@ -98,7 +89,7 @@ export default function AboutUs() {
     {
       name: "Next.js",
       icon: (
-        <img
+        <NextImage
           src="https://www.svgrepo.com/show/374026/nextjs.svg"
           alt="Next.js"
           className="h-6 w-6"
@@ -108,7 +99,7 @@ export default function AboutUs() {
     {
       name: "React",
       icon: (
-        <img
+        <NextImage
           src="https://www.svgrepo.com/show/452092/react.svg"
           alt="React"
           className="h-6 w-6"
@@ -118,7 +109,7 @@ export default function AboutUs() {
     {
       name: "TypeScript",
       icon: (
-        <img
+        <NextImage
           src="https://www.svgrepo.com/show/374146/typescript.svg"
           alt="TypeScript"
           className="h-6 w-6"
@@ -128,7 +119,7 @@ export default function AboutUs() {
     {
       name: "Tailwind CSS",
       icon: (
-        <img
+        <NextImage
           src="https://www.svgrepo.com/show/374118/tailwind.svg"
           alt="Tailwind CSS"
           className="h-6 w-6"
@@ -138,7 +129,7 @@ export default function AboutUs() {
     {
       name: "Node.js",
       icon: (
-        <img
+        <NextImage
           src="https://www.svgrepo.com/show/378877/node-js.svg"
           alt="Node.js"
           className="h-6 w-6"
@@ -148,7 +139,7 @@ export default function AboutUs() {
     {
       name: "Express.js",
       icon: (
-        <img
+        <NextImage
           src="https://www.svgrepo.com/show/373595/graphql.svg"
           alt="GraphQL"
           className="h-6 w-6"
@@ -158,7 +149,7 @@ export default function AboutUs() {
     {
       name: "JavaScript",
       icon: (
-        <img
+        <NextImage
           src="https://www.svgrepo.com/show/373595/graphql.svg"
           alt="GraphQL"
           className="h-6 w-6"
@@ -168,7 +159,7 @@ export default function AboutUs() {
     {
       name: "MongoDB",
       icon: (
-        <img
+        <NextImage
           src="https://www.svgrepo.com/show/373845/mongodb.svg"
           alt="MongoDB"
           className="h-6 w-6"
@@ -180,11 +171,12 @@ export default function AboutUs() {
   // Your social and portfolio links
   const socialLinks: Link[] = [
     { name: "Portfolio", url: "#", icon: <Briefcase size={20} /> },
-    { name: "LinkedIn", url: "#", icon: <Linkedin size={20} /> },
-    { name: "GitHub", url: "#", icon: <Github size={20} /> },
+    { name: "LinkedIn", url: "#", icon: <FaLinkedin size={20} /> },
+    { name: "GitHub", url: "#", icon: <FaGithub size={20} /> },
   ];
 
   // Animation variants for Framer Motion
+  // Replace your current variants with these
   const containerVariants = {
     hidden: { opacity: 0 },
     show: {
@@ -197,7 +189,14 @@ export default function AboutUs() {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 100 } },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring" as const, // Use 'as const' to narrow the type
+        stiffness: 100,
+      },
+    },
   };
 
   if (loading) {
@@ -238,7 +237,7 @@ export default function AboutUs() {
             />
             <motion.div className="flex flex-col items-center md:items-start space-y-4">
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight">
-                Hi, I'm{" "}
+                {" Hi , I'm "}
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-rose-500 to-pink-500">
                   {personalInfo.name}
                 </span>

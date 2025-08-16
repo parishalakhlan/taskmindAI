@@ -1,6 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Download } from "lucide-react";
+
 import { FaGithub, FaLinkedin } from "react-icons/fa";
 import Link from "next/link";
 // --- Custom SVG components for the Hero section ---
@@ -86,7 +86,7 @@ export const HeroSection = () => {
       rotate: [0, i * 5, 0],
       transition: {
         duration: 6,
-        ease: "easeInOut",
+        ease: "easeInOut" as const, // Add 'as const' to narrow the type
         repeat: Infinity,
         delay: i * 0.3,
       },
@@ -187,7 +187,14 @@ export const HeroSection = () => {
 export const FooterSection = () => {
   const footerVariants = {
     hidden: { opacity: 0, y: 20 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut" as const, // Add 'as const' to narrow the type
+      },
+    },
   };
 
   const sections = [
@@ -297,15 +304,24 @@ export const FooterSection = () => {
 export const FeaturesSection = () => {
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },
-    show: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.8,
+        ease: "easeOut" as const, // Add 'as const' to narrow the type
+      },
+    },
   };
-
   const buttonVariants = {
     rest: { scale: 1, rotate: 0 },
     hover: {
       scale: 1.1,
       rotate: 360,
-      transition: { duration: 0.5, ease: "easeInOut" },
+      transition: {
+        duration: 0.5,
+        ease: "easeInOut" as const, // Add 'as const' to narrow the type
+      },
     },
   };
 

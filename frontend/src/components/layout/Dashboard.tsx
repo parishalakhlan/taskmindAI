@@ -8,33 +8,21 @@ import { useTask } from "@/context/TaskContext";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  Search,
   LayoutDashboard,
   UserCircle,
   ClipboardList,
   Mail,
   Star,
-  Users,
-  MessageSquare,
-  BarChart,
-  Settings,
-  Plus,
   X,
   CheckCircle2,
-  Calendar,
   Activity,
-  ChevronDown,
   Menu,
   User2Icon,
 } from "lucide-react";
 
-interface ProgressChartProps {
-  percent: number;
-}
-
 export const Dashboard: React.FC = () => {
-  const { isAuthenticated, logout, user } = useAuth();
-  const { tasks, loading } = useTask();
+  const { isAuthenticated, user } = useAuth();
+  const { tasks } = useTask();
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
   const router = useRouter();
@@ -57,7 +45,7 @@ export const Dashboard: React.FC = () => {
       opacity: 1,
       y: 0,
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 150,
         damping: 15,
         delayChildren: 0.2,
@@ -69,7 +57,7 @@ export const Dashboard: React.FC = () => {
       boxShadow:
         "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
       transition: {
-        type: "spring",
+        type: "spring" as const,
         stiffness: 300,
         damping: 10,
       },
@@ -81,12 +69,6 @@ export const Dashboard: React.FC = () => {
     visible: { opacity: 1, y: 0 },
   };
 
-  const iconVariants = {
-    hover: {
-      rotate: 15,
-      scale: 1.1,
-    },
-  };
   // Get current week days (Sunday to Saturday)
   const getCurrentWeekDays = () => {
     const days = [];
@@ -120,11 +102,15 @@ export const Dashboard: React.FC = () => {
   };
 
   // Variants for individual chart bars
+  // Update the barVariants to use proper types
   const barVariants = {
     hidden: { height: 0 },
     visible: {
-      height: "var(--height)",
-      transition: { duration: 0.8, ease: "easeOut" },
+      height: "100%", // Use fixed value instead of CSS variable
+      transition: {
+        duration: 0.8,
+        ease: "easeOut" as const, // Add type assertion
+      },
     },
   };
 
@@ -133,11 +119,14 @@ export const Dashboard: React.FC = () => {
     visible: {
       scale: 1,
       opacity: 1,
-      transition: { duration: 0.6, ease: "easeOut" },
+      transition: {
+        duration: 0.6,
+        ease: "easeOut" as const,
+      },
     },
   };
   // Fixed function to get local date string (YYYY-MM-DD format)
-  const getLocalDateString = (date) => {
+  const getLocalDateString = (date: Date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
@@ -179,6 +168,7 @@ export const Dashboard: React.FC = () => {
   };
 
   const weekDaysWithTasks = groupTasksByDay();
+  /*
   const ProgressChart = ({ percent }: { percent: number }) => {
     const [hoveredSection, setHoveredSection] = useState<
       "completed" | "undone" | null
@@ -189,8 +179,6 @@ export const Dashboard: React.FC = () => {
     const strokeDasharray = circumference;
     const strokeDashoffsetCompleted =
       circumference - (percent / 100) * circumference;
-    const strokeDashoffsetUndone =
-      circumference - ((100 - percent) / 100) * circumference;
 
     return (
       <div className="relative w-32 h-32">
@@ -269,7 +257,7 @@ export const Dashboard: React.FC = () => {
         )}
       </div>
     );
-  };
+  }; */
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
@@ -280,13 +268,6 @@ export const Dashboard: React.FC = () => {
     }, // Tailwind shadow-lg equivalent
     tap: { scale: 0.95 },
   };
-  interface Task {
-    title: string;
-    dueDate: string;
-    assignee: string;
-    status: string;
-    color: string;
-  }
 
   interface SidebarItem {
     name: string;
@@ -601,9 +582,13 @@ export const Dashboard: React.FC = () => {
                           <motion.div
                             className="w-1/2 bg-blue-500 rounded-t-md relative hover:bg-blue-400 transition-colors duration-200"
                             style={{
-                              "--height": `${(createdCount / maxValue) * 100}%`,
-                              height: 0,
+                              height: `${(createdCount / maxValue) * 100}%`,
                             }}
+                            initial={{ height: 0 }}
+                            animate={{
+                              height: `${(createdCount / maxValue) * 100}%`,
+                            }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
                             variants={barVariants}
                           >
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white text-gray-800 text-[10px] md:text-xs px-2 py-1 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-gray-200">
@@ -613,11 +598,13 @@ export const Dashboard: React.FC = () => {
                           <motion.div
                             className="w-1/2 bg-rose-500 rounded-t-md relative hover:bg-rose-400 transition-colors duration-200"
                             style={{
-                              "--height": `${
-                                (completedCount / maxValue) * 100
-                              }%`,
-                              height: 0,
+                              height: `${(completedCount / maxValue) * 100}%`,
                             }}
+                            initial={{ height: 0 }}
+                            animate={{
+                              height: `${(completedCount / maxValue) * 100}%`,
+                            }}
+                            transition={{ duration: 0.8, ease: "easeOut" }}
                             variants={barVariants}
                           >
                             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 bg-white text-gray-800 text-[10px] md:text-xs px-2 py-1 rounded-md shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap border border-gray-200">
