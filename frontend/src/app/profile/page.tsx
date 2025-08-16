@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useProfile } from "@/context/profile-context";
 import Layout from "@/components/Layout";
-import DashboardLayout from "@/components/layout/DashboardLayout";
+
 import toast from "react-hot-toast";
 import { User } from "@/context/types"; // Import your base interface
 interface ProfileUser extends User {
