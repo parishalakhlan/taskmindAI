@@ -4,7 +4,13 @@ import { useAuth } from "@/hooks/useAuth";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import DashboardLayout from "@/components/layout/DashboardLayout";
+import { Dashboard } from "@/components/layout/Dashboard";
+import Layout from "@/components/Layout";
+import { TaskProvider } from "@/context/TaskContext";
+import React from "react";
+
 export default function DashboardPage() {
+  /*
   const { user, isAuthenticated, logout } = useAuth();
   const router = useRouter();
   useEffect(() => {
@@ -14,9 +20,28 @@ export default function DashboardPage() {
   }, [isAuthenticated, router]);
   if (!isAuthenticated) {
     return <p className="text-center mt-10">Redirecting to login...</p>;
-  }
+  } */
 
   return (
+    <>
+      <Layout>
+        <TaskProvider>
+          {" "}
+          <Dashboard />
+        </TaskProvider>
+      </Layout>
+
+      {/*
+
+     
+
+      ///
+
+
+       <Layout>
+        {" "}
+        <Dashboard />
+      </Layout>
     <main className="min-h-screen p-6 bg-gray-50 text-gray-800">
       <h1 className="text-3xl font-bold mb-4">Welcome, {user?.name}!</h1>
       <p className="text-lg">This is your dashboard.</p>
@@ -29,6 +54,8 @@ export default function DashboardPage() {
       <DashboardLayout>
         <div className="text-2xl">🎉 Welcome to your Dashboard!</div>
       </DashboardLayout>
-    </main>
+     
+    </main> */}
+    </>
   );
 }

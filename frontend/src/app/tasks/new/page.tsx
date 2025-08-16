@@ -19,13 +19,17 @@ export default function NewTaskPage() {
   const [includeAI, setIncludeAI] = useState(false);
   const [aiSuggestions, setAISuggestions] = useState<Suggestion[]>([]);
   const [suggesting, setSuggesting] = useState(false);
+
   const fetchAISuggestions = async () => {
     setSuggesting(true);
+
     console.log("About to call AI suggestions API");
+    console.log("Title value:", title); // Add this line
     try {
       const res = await fetch("http://localhost:5000/api/v1/ai/tasks/suggest", {
         method: "POST",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
@@ -33,8 +37,17 @@ export default function NewTaskPage() {
         }),
       });
 
-      const data = await res.json();
-      setAISuggestions(data.data.suggestions || []);
+      const data = await res.json(); // Array of suggestions
+      const suggestions = data.data; // 👈 extract the array
+
+      if (Array.isArray(suggestions) && suggestions.length > 0) {
+        const combined = suggestions
+          .map((s, i) => `${i + 1}. ${s.title}`)
+          .join("\n");
+        setDescription(combined);
+      } else {
+        console.warn("❌ No suggestions returned or response not an array.");
+      }
     } catch (err) {
       console.error("Failed to fetch AI suggestions", err);
     } finally {
@@ -57,7 +70,6 @@ export default function NewTaskPage() {
         body: JSON.stringify({
           title,
           description,
-          includeAISuggestions: includeAI,
         }),
       });
 
@@ -68,12 +80,13 @@ export default function NewTaskPage() {
         position: "top-right",
         duration: 4000,
       }); // Add this line
+
       console.log("Task created ✅", data);
       setTitle("");
       setDescription("");
-      setIncludeAI(false);
-      setAISuggestions([]);
 
+      setAISuggestions([]);
+      setIncludeAI(false);
       console.log("Task created ✅", data);
     } catch (err) {
       console.error("Error creating task:", err);
@@ -92,23 +105,35 @@ export default function NewTaskPage() {
         className="max-w-lg space-y-4 bg-white p-6 rounded shadow"
       >
         <div>
-          <label className="block font-medium">Title:</label>
+          <label
+            htmlFor="task-title"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Title:
+          </label>
           <input
             type="text"
             value={title}
+            id="task-title"
             onChange={(e) => setTitle(e.target.value)}
-            className="w-full border text-green-500 border-gray-300 px-3 py-2 rounded mt-1"
-            placeholder="e.g. Finish AI integration"
+            className="w-full p-3 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 transition-colors"
+            placeholder="e.g. Eat Ice-cream"
           />
         </div>
 
         <div>
-          <label className="block font-medium">Description:</label>
+          <label
+            htmlFor="task-description"
+            className="block text-sm font-medium text-gray-700 mb-1"
+          >
+            Description:
+          </label>
           <textarea
+            id="task-description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full border text-amber-900 border-gray-300 px-3 py-2 rounded mt-1"
-            placeholder="Optional"
+            className="w-full p-3 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-rose-500 resize-none transition-colors"
+            placeholder="Optional : Which flavor i wanna have today ?"
             rows={4}
           />
         </div>

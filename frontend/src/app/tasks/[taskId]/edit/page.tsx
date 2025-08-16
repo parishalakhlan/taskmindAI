@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/hooks/useAuth";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 
 export default function EditTaskPage() {
   const { token } = useAuth();
   const router = useRouter();
-  const { id } = useParams(); // 🟡 Get the task ID from URL (e.g. /tasks/123/edit)
+  const { id } = useParams();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");

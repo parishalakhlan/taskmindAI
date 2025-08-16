@@ -2,7 +2,8 @@
 "use client";
 import { AuthProvider } from "@/context/AuthProvider";
 import { Toaster } from "react-hot-toast";
-import "./globals.css";
+import { ProfileProvider } from "@/context/profile-context";
+import "@/styles/globals.css";
 
 import { ReactNode } from "react";
 import { TaskProvider } from "@/context/TaskContext";
@@ -13,10 +14,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body>
         <AuthProvider>
           {" "}
-          <TaskProvider>
-            <Toaster position="top-right" />
-            {children}
-          </TaskProvider>
+          <ProfileProvider>
+            <TaskProvider>
+              <Toaster position="top-right" />
+              {children}
+            </TaskProvider>
+          </ProfileProvider>
         </AuthProvider>
       </body>
     </html>
