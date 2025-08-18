@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
+    "start": "NODE_ENV=production node server.js",
+    "vercel-build": "NODE_ENV=production npm install && npm run build",
     "dev": "nodemon server.js"
   },
   "keywords": [],

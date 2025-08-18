@@ -5,7 +5,7 @@ const Profile = require("../models/Profile");
 const bcrypt = require("bcryptjs");
 const OTP = require("../models/Otp");
 const { sendOTPEmail } = require("../utils/emailerSender");
-
+const catchAsync = require("../utils/catchAsync");
 const signToken = (id) => {
   return jwt.sign({ id: id.toString() }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRES_IN,
@@ -21,12 +21,23 @@ const generateToken = (userId) => {
 };
 
 // Send OTP for Signup
-const sendSignupOTP = async (req, res) => {
+// Send OTP for Signup - FIXED VERSION
+const sendSignupOTP = async (req, res, next) => {
   const { email, name, password } = req.body;
-  console.log("checking signup OTP");
+  console.log("Received signup OTP request with:", {
+    email,
+    name,
+    password: password ? "***" : undefined,
+  });
+
   try {
     // Validate input
     if (!email || !name || !password) {
+      console.log("Validation failed - missing fields:", {
+        email: !!email,
+        name: !!name,
+        password: !!password,
+      });
       return res.status(400).json({
         success: false,
         message: "Name, email, and password are required",
@@ -36,6 +47,7 @@ const sendSignupOTP = async (req, res) => {
     // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
+      console.log("User already exists:", email);
       return res.status(400).json({
         success: false,
         message: "User already exists with this email",
@@ -44,6 +56,7 @@ const sendSignupOTP = async (req, res) => {
 
     // Generate 6-digit OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log("Generated OTP for", email, ":", otp);
 
     // Delete any existing OTP for this email and purpose
     await OTP.deleteMany({ email, purpose: "signup" });
@@ -57,6 +70,7 @@ const sendSignupOTP = async (req, res) => {
 
     // Send OTP email
     const emailSent = await sendOTPEmail(email, otp);
+    console.log("Email sent result:", emailSent);
 
     if (!emailSent) {
       return res.status(500).json({
@@ -65,8 +79,9 @@ const sendSignupOTP = async (req, res) => {
       });
     }
 
-    res.json({
-      success: true,
+    console.log("OTP sent successfully to:", email);
+    res.status(200).json({
+      status: "success",
       message: "OTP sent successfully to your email",
     });
   } catch (error) {
@@ -77,10 +92,11 @@ const sendSignupOTP = async (req, res) => {
     });
   }
 };
-
 // Verify OTP and Complete Signup
-const verifySignupOTP = async (req, res) => {
-  const { email, name, password, passwordConfirm, otp } = req.body; // Added passwordConfirm here
+// Verify OTP and Complete Signup - FIXED VERSION
+const verifySignupOTP = async (req, res, next) => {
+  // Added 'next' parameter here
+  const { email, name, password, passwordConfirm, otp } = req.body;
 
   try {
     if (!email || !name || !password || !passwordConfirm || !otp) {
@@ -90,12 +106,14 @@ const verifySignupOTP = async (req, res) => {
           "All fields (email, name, password, passwordConfirm, OTP) are required.",
       });
     }
+
     if (password !== passwordConfirm) {
       return res.status(400).json({
         success: false,
         message: "Passwords do not match.",
       });
     }
+
     // Find OTP record
     const otpRecord = await OTP.findOne({
       email,
@@ -144,7 +162,7 @@ const verifySignupOTP = async (req, res) => {
       name,
       email,
       password,
-      passwordConfirm, // Must be included to pass validation
+      passwordConfirm,
       isVerified: true,
     });
 
