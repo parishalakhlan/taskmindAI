@@ -26,9 +26,13 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(express.json());
 // Middleware
+const allowedOrigins = [
+  "http://localhost:3000", // local dev
+  "https://taskmind-ai-one.vercel.app", // deployed frontend
+];
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: allowedOrigins,
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
     allowedHeaders: [
