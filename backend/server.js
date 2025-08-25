@@ -84,25 +84,25 @@ app.use(errorHandler);
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
-    logger.info("✅ Connected to MongoDB");
+    console.log("✅ Connected to MongoDB");
     // Start server only after DB is ready
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
-      logger.info(`🚀 Server running on port ${PORT}`);
       console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
+      console.log(`🚀 Server running on port ${PORT}`);
     });
   })
   .catch((err) => {
-    logger.error("❌ MongoDB connection error:", err);
+    console.log("❌ MongoDB connection error:", err);
     process.exit(1); // Exit app if DB connection fails
   });
 
 // Global unhandled error handlers
 process.on("uncaughtException", (err) => {
-  logger.error("Uncaught Exception:", err);
+  console.log("Uncaught Exception:", err);
   process.exit(1);
 });
 
 process.on("unhandledRejection", (err) => {
-  logger.error("Unhandled Rejection:", err);
+  console.log("Unhandled Rejection:", err);
 });
