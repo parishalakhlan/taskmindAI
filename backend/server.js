@@ -11,7 +11,7 @@ const cookieParser = require("cookie-parser");
 dotenv.config();
 
 // Import custom modules
-const logger = require("./utils/logger");
+
 const errorHandler = require("./utils/errorHandler");
 const authMiddleware = require("./middlewares/authMiddleware");
 
