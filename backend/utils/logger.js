@@ -1,36 +1,20 @@
-const winston = require("winston");
+const { createLogger, format, transports } = require("winston");
 
-const logger = winston.createLogger({
+const logger = createLogger({
   level: "info",
-  format: winston.format.combine(
-    winston.format.timestamp(),
-    winston.format.json()
-  ),
+  format: format.combine(format.timestamp(), format.json()),
   transports: [
-    new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      ),
-    }),
-    new winston.transports.File({
-      filename: "logs/error.log",
-      level: "error",
-    }),
-    new winston.transports.File({
-      filename: "logs/combined.log",
-    }),
+    new transports.Console(), // always available
   ],
 });
 
-// Helper method for request logging
-logger.logRequest = (req) => {
-  logger.info("Incoming request", {
-    method: req.method,
-    url: req.originalUrl,
-    body: req.body,
-    user: req.user?.id,
-  });
-};
+// Only add File transport in local/dev
+if (process.env.NODE_ENV !== "production") {
+  const fs = require("fs");
+  if (!fs.existsSync("logs")) {
+    fs.mkdirSync("logs");
+  }
+  logger.add(new transports.File({ filename: "logs/app.log" }));
+}
 
 module.exports = logger;
