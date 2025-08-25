@@ -3,7 +3,7 @@ const User = require("../models/userModel");
 const AppError = require("../utils/appError");
 const Profile = require("../models/Profile");
 const bcrypt = require("bcryptjs");
-const OTP = require("../models/OTP");
+const OTP = require("../models/Otpfile");
 const { sendOTPEmail } = require("../utils/emailerSender");
 const catchAsync = require("../utils/catchAsync");
 const signToken = (id) => {
