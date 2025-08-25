@@ -1,6 +1,6 @@
 const { TaskModel: Task } = require("../models/taskModel");
 const AppError = require("../utils/appError");
-const logger = require("../utils/logger");
+
 const ollama = require("../services/ollamaService");
 
 const handleNotFound = (task, res) => {
@@ -13,9 +13,6 @@ exports.createTask = async (req, res, next) => {
   try {
     // 1. Log the incoming request properly
     // Correct way
-    logRequest: (req) => {
-      logger.info(`Request body: ${JSON.stringify(req.body)}`);
-    };
 
     // 2. Validate user
     if (!req.user?.id) {
@@ -27,9 +24,9 @@ exports.createTask = async (req, res, next) => {
     if (req.body.includeAISuggestions) {
       try {
         aiResponse = await ollama.suggestTasks([req.body.title]);
-        logger.info("AI suggestions generated", { suggestions: aiResponse });
+        console.log("AI suggestions generated", { suggestions: aiResponse });
       } catch (aiError) {
-        logger.error("AI suggestion failed", { error: aiError.message });
+        console.log("AI suggestion failed", { error: aiError.message });
       }
     }
 
@@ -49,10 +46,11 @@ exports.createTask = async (req, res, next) => {
       },
     });
   } catch (err) {
-    logger.error("Task creation failed", {
+    console.log("Task creation failed", {
       error: err.message,
       stack: err.stack,
     });
+
     next(err);
   }
 };
@@ -110,12 +108,13 @@ exports.deleteTask = async (req, res, next) => {
   console.log("deleteTask function backend");
   try {
     console.log("[DEBUG] Delete Task - Start");
-    logger.info(`Deleted task ID: ${req.params.id}`);
+
+    console.log(`Deleted task ID: ${req.params.id}`);
     const task = await Task.findByIdAndDelete(req.params.id);
 
     handleNotFound(task, res);
 
-    logger.info(`Deleted task ID: ${req.params.id}`);
+    console.log(`Deleted task ID: ${req.params.id}`);
     console.log("backend working fine");
     res.status(204).json({
       status: "success",
@@ -183,14 +182,12 @@ exports.toggleTaskCompletion = async (req, res, next) => {
       status: "success",
       data: { task },
     });
-
-    logger.info(`Task ${task._id} completion toggled to ${task.completed}`);
+    console.log(`Task ${task._id} completion toggled to ${task.completed}`);
   } catch (err) {
-    logger.error("Task completion toggle failed", {
+    console.log("Task completion toggle failed", {
       error: err.message,
       taskId: req.params.id,
     });
-
     // Send error response
     res.status(500).json({
       status: "error",

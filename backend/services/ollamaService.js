@@ -1,8 +1,8 @@
 const axios = require("axios");
-const logger = require("../utils/logger");
+
 const NodeCache = require("node-cache");
 const crypto = require("crypto");
-const { Readable } = require("stream");
+
 const cache = new NodeCache({ stdTTL: 3600 }); // 1 hour cache
 
 class OllamaService {
@@ -28,8 +28,7 @@ class OllamaService {
     };
 
     try {
-      logger.info(`Sending prompt to Ollama: ${prompt.slice(0, 100)}...`);
-
+      console.log(`Sending prompt to Ollama: ${prompt.slice(0, 100)}...`);
       const response = await axios.post(
         `${this.baseURL}/generate`,
         {
@@ -53,10 +52,11 @@ class OllamaService {
       }
 
       const parsed = JSON.parse(jsonMatch[0]);
-      logger.info(`AI response: ${JSON.stringify(parsed).slice(0, 100)}...`);
+
+      console.log(`AI response: ${JSON.stringify(parsed).slice(0, 100)}...`);
       return parsed;
     } catch (err) {
-      logger.error(`Ollama API failed: ${err.message}`);
+      console.log(`Ollama API failed: ${err.message}`);
       throw new Error(`AI service unavailable: ${err.message}`);
     }
   }
