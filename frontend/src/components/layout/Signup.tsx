@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import NextImage from "next/image";
 import { SignupOTP } from "@/context/SignupOTP";
+import toast from "react-hot-toast";
 interface UserData {
   id: string;
   name: string;
@@ -26,8 +27,7 @@ export const Signup = () => {
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [isLoading] = useState(false);
   const [showOTP, setShowOTP] = useState(false);
   const [signupData, setSignupData] = useState({
     name: "",
@@ -37,27 +37,27 @@ export const Signup = () => {
   });
   const validateForm = () => {
     if (!name.trim()) {
-      setError("Name is required");
+      toast.error("Name is required");
       return false;
     }
     if (!email.trim()) {
-      setError("Email is required");
+      toast.error("Email is required");
       return false;
     }
     if (!password.trim()) {
-      setError("Password is required");
+      toast.error("Password is required");
       return false;
     }
     if (!passwordConfirm.trim()) {
-      setError("Please confirm your password");
+      toast.error("Please confirm your password");
       return false;
     }
     if (password !== passwordConfirm) {
-      setError("Passwords do not match");
+      toast.error("Passwords do not match");
       return false;
     }
     if (password.length < 6) {
-      setError("Password must be at least 6 characters");
+      toast.error("Password must be at least 6 characters");
       return false;
     }
     return true;
@@ -65,7 +65,7 @@ export const Signup = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
+    toast.error("");
     if (!validateForm()) {
       return;
     }
@@ -124,7 +124,7 @@ export const Signup = () => {
       router.push("/dashboard");
     } catch (error) {
       console.error("Error handling OTP success:", error);
-      setError("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     }
   };
 

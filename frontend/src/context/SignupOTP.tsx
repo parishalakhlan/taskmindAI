@@ -1,6 +1,6 @@
 // components/auth/SignupOTP.tsx
 "use client";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaSpinner, FaTimesCircle } from "react-icons/fa";
 interface UserData {
@@ -36,7 +36,7 @@ export const SignupOTP: React.FC<SignupOTPProps> = ({
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const sendOTP = async () => {
+  const sendOTP = useCallback(async () => {
     setIsLoading(true);
     setError("");
 
@@ -75,12 +75,12 @@ export const SignupOTP: React.FC<SignupOTPProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [signupData.email, signupData.name, signupData.password]);
   useEffect(() => {
     if (isOpen && !isOtpSent) {
       sendOTP();
     }
-  }, [isOpen, isOtpSent]);
+  }, [isOpen, isOtpSent, sendOTP]);
 
   // Resend timer
   useEffect(() => {
@@ -333,22 +333,7 @@ export const LoginOTP: React.FC<LoginOTPProps> = ({
 
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  // Send initial OTP when component opens
-  useEffect(() => {
-    if (isOpen && !isOtpSent) {
-      sendOTP();
-    }
-  }, [isOpen, isOtpSent]);
-
-  // Resend timer
-  useEffect(() => {
-    if (resendTimer > 0) {
-      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
-      return () => clearTimeout(timer);
-    }
-  }, [resendTimer]);
-
-  const sendOTP = async () => {
+  const sendOTP = useCallback(async () => {
     setIsLoading(true);
     setError("");
 
@@ -374,7 +359,22 @@ export const LoginOTP: React.FC<LoginOTPProps> = ({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [email]);
+
+  // Send initial OTP when component opens
+  useEffect(() => {
+    if (isOpen && !isOtpSent) {
+      sendOTP();
+    }
+  }, [isOpen, isOtpSent, email, sendOTP]);
+
+  // Resend timer
+  useEffect(() => {
+    if (resendTimer > 0) {
+      const timer = setTimeout(() => setResendTimer(resendTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [resendTimer]);
 
   const verifyOTP = async () => {
     const otpCode = otp.join("");
