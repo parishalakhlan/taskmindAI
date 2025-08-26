@@ -75,7 +75,7 @@ const TaskContext = createContext<TaskContextType | undefined>(undefined);
 interface TaskProviderProps {
   children: ReactNode;
 }
-
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_PUBLIC_URL;
 // Task Provider Component
 export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const { token } = useAuth();
@@ -106,8 +106,11 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:5000/api/v1/tasks", {
-        headers: { Authorization: `Bearer ${token}` },
+      const res = await fetch(`${backendUrl}/api/v1/tasks`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
         credentials: "include",
       });
 
@@ -139,7 +142,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/v1/tasks", {
+      const res = await fetch(`${backendUrl}/api/v1/tasks`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -183,7 +186,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
     setUpdating(true);
     try {
-      const res = await fetch(`http://localhost:5000/api/v1/tasks/${id}`, {
+      const res = await fetch(`${backendUrl}/api/v1/tasks/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -231,7 +234,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
 
     setDeletingId(id);
     try {
-      const res = await fetch(`http://localhost:5000/api/v1/tasks/${id}`, {
+      const res = await fetch(`${backendUrl}/api/v1/tasks/${id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
         credentials: "include",
@@ -278,7 +281,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
         `http://localhost:5000/api/v1/tasks/${id}/toggle-completion`
       );
       const res = await fetch(
-        `http://localhost:5000/api/v1/tasks/${id}/toggle-completion`,
+        `${backendUrl}/api/v1/tasks/${id}/toggle-completion`,
         {
           method: "PATCH",
           headers: {
@@ -318,7 +321,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
     if (!token || !title.trim()) return [];
 
     try {
-      const res = await fetch("http://localhost:5000/api/v1/ai/tasks/suggest", {
+      const res = await fetch(`${backendUrl}/api/v1/tasks/suggest`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

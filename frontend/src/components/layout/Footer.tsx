@@ -200,22 +200,20 @@ export const FooterSection = () => {
   const sections = [
     {
       title: "Navigation",
-      links: ["Home", "Dashboard", "About", "Blog"],
-    },
-    {
-      title: "Contact",
-      links: ["FAQ", "TOS"],
+      links: [
+        { name: "Home", href: "/" },
+        { name: "Dashboard", href: "/dashboard" },
+        { name: "About", href: "/about" },
+      ],
     },
     {
       title: "Social",
-      links: ["Github", "LinkedIn"],
-    },
-    {
-      title: "Grow",
-      links: ["Contact Us", "Help"],
+      links: [
+        { name: "Github", href: "https://github.com/yourusername" },
+        { name: "LinkedIn", href: "https://linkedin.com/in/yourprofile" },
+      ],
     },
   ];
-
   return (
     <motion.footer
       className="bg-gray-800 text-gray-300 p-8 md:p-12 font-inter"
@@ -280,10 +278,17 @@ export const FooterSection = () => {
               {section.links.map((link, linkIndex) => (
                 <li key={linkIndex}>
                   <a
-                    href="#"
+                    href={link.href}
                     className="text-sm text-gray-400 hover:text-white transition-colors"
+                    // Add target="_blank" and rel for external links
+                    {...(link.href.startsWith("http")
+                      ? {
+                          target: "_blank",
+                          rel: "noopener noreferrer",
+                        }
+                      : {})}
                   >
-                    {link}
+                    {link.name}
                   </a>
                 </li>
               ))}

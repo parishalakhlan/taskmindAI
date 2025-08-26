@@ -19,44 +19,56 @@ export default function App() {
       <HeroSection />
       <FeaturesSection />
       <AppFeatureSection
-        title="Your Goals, Organized"
-        subtitle="Plan smarter, live easier"
-        description="Easily organize tasks, track your progress, and see your achievements grow over time."
-        imageSrc="/images/integration-mockup.png"
+        title="Smart Task Management"
+        subtitle="Plan. Create. Conquer."
+        description="Create tasks in seconds, organize them with ease, and keep everything in one simple, powerful list."
+        imageSrc="/newTask.png"
+        priority={true}
       />
+
       <AppFeatureSection
-        title="Stay On Top of Your Day"
-        subtitle="Clarity meets control"
-        description="From to-do lists to detailed charts, keep your work and progress in perfect sync."
-        imageSrc="/images/integration-mockup.png"
+        title="Your Dashboard, Your Control"
+        subtitle="One view to rule them all"
+        description="Stay on top of your day with a clean dashboard that shows exactly what matters — tasks, progress, and insights."
+        imageSrc="/Dashboard.png"
         reverseLayout={true}
+        priority={true}
       />
+
       <AppFeatureSection
-        title="All About You"
-        subtitle="Your workspace, your way"
-        description="Customize your profile, manage tasks, and stay productive in a space built just for you."
-        imageSrc="/images/integration-mockup.png"
+        title="Track Weekly Progress"
+        subtitle="Small steps, big wins"
+        description="Visualize your week with bar and donut charts that turn your progress into clear, motivating insights."
+        imageSrc="/BarChart.png"
+        priority={true}
       />
+
       <AppFeatureSection
-        title="Seamless Integration"
-        subtitle="Connect effortlessly"
-        description="Sync with all your favorite tools in just a few clicks. No coding required."
-        imageSrc="/images/integration-mockup.png"
+        title="Stay in Sync"
+        subtitle="Your tasks, your flow"
+        description="Whether it’s today’s priorities or long-term goals, everything stays connected and updated in real-time."
+        imageSrc="/TaskList.png"
         reverseLayout={true}
+        priority={true}
       />
+
       <AppFeatureSection
-        title="Visualize Your Progress"
-        subtitle="Productivity at a glance"
-        description="Turn your completed tasks into clear, beautiful charts that motivate you to keep going."
-        imageSrc="/images/integration-mockup.png"
+        title="Data That Motivates"
+        subtitle="Progress you can see"
+        description="Your completed tasks transform into charts that not only look good, but also push you to achieve more."
+        imageSrc="/donutChart.png"
+        priority={true}
       />
+
       <AppFeatureSection
-        title="Your Productivity Story"
-        subtitle="Track. Improve. Achieve."
-        description="See how far you’ve come with interactive charts and a dashboard that grows with you."
-        imageSrc="/images/integration-mockup.png"
+        title="Your Profile Hub"
+        subtitle="Personalized for you"
+        description="Manage your profile, view your achievements, and watch your productivity story unfold in one place."
+        imageSrc="/Profile.png"
         reverseLayout={true}
+        priority={true}
       />
+
       <FooterSection />
     </div>
   );

@@ -5,7 +5,7 @@ import { AuthContextType, User } from "./types";
 interface AuthProviderProps {
   children: ReactNode;
 }
-
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_PUBLIC_URL;
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(() => {
     if (typeof window !== "undefined") {
@@ -45,18 +45,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         console.log("Token found:", storedToken ? "Yes" : "No");
         if (storedToken) {
           // Verify token with backend
-          const response = await fetch(
-            "http://localhost:5000/api/v1/auth/check-auth",
-            {
-              method: "GET",
-              headers: {
-                Authorization: `Bearer ${storedToken}`,
-                "Content-Type": "application/json",
-                //    "Cache-Control": "no-cache", // Add this
-                //     Pragma: "no-cache",
-              },
-            }
-          );
+          const response = await fetch(`${backendUrl}/api/v1/auth/check-auth`, {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${storedToken}`,
+              "Content-Type": "application/json",
+              //    "Cache-Control": "no-cache", // Add this
+              //     Pragma: "no-cache",
+            },
+          });
           console.log("Whether getting response");
           if (response.ok) {
             const userData = await response.json();
@@ -90,7 +87,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/v1/auth/login", {
+      const response = await fetch(`${backendUrl}/api/v1/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

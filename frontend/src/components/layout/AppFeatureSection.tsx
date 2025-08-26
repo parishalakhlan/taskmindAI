@@ -7,6 +7,7 @@ interface AppFeatureSectionProps {
   description: string;
   imageSrc: string;
   reverseLayout?: boolean;
+  priority?: boolean;
 }
 
 export const AppFeatureSection: React.FC<AppFeatureSectionProps> = ({
@@ -59,15 +60,6 @@ export const AppFeatureSection: React.FC<AppFeatureSectionProps> = ({
               {title}
             </h2>
             <p className="text-gray-600 mb-8 max-w-md">{description}</p>
-            <motion.a
-              href="#"
-              className="inline-block px-6 py-3 rounded-full font-semibold text-white 
-                         bg-rose-500 hover:bg-rose-600 transition-colors duration-300 shadow-lg"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-            >
-              Learn More
-            </motion.a>
           </motion.div>
 
           {/* Image/Mockup */}
@@ -78,8 +70,10 @@ export const AppFeatureSection: React.FC<AppFeatureSectionProps> = ({
             <NextImage
               src={imageSrc}
               alt={title}
-              width={20}
-              height={20}
+              width={600} // ✅ Much larger base size
+              height={400} // ✅ Better aspect ratio
+              quality={95}
+              priority={true} // ✅ Higher quality
               className="relative z-10 w-full max-w-sm md:max-w-md h-auto rounded-xl shadow-2xl"
             />
             {/* Background Blob/Shape */}

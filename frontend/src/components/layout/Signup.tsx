@@ -6,6 +6,15 @@ import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import NextImage from "next/image";
+import { SignupOTP } from "@/context/SignupOTP";
+interface UserData {
+  id: string;
+  name: string;
+  email: string;
+  // Add other user properties as needed
+}
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_PUBLIC_URL;
+
 // Main Sign Up component
 export const Signup = () => {
   // State to manage input values and password visibility
@@ -14,13 +23,62 @@ export const Signup = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [showOTP, setShowOTP] = useState(false);
+  const [signupData, setSignupData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    passwordConfirm: "",
+  });
+  const validateForm = () => {
+    if (!name.trim()) {
+      setError("Name is required");
+      return false;
+    }
+    if (!email.trim()) {
+      setError("Email is required");
+      return false;
+    }
+    if (!password.trim()) {
+      setError("Password is required");
+      return false;
+    }
+    if (!passwordConfirm.trim()) {
+      setError("Please confirm your password");
+      return false;
+    }
+    if (password !== passwordConfirm) {
+      setError("Passwords do not match");
+      return false;
+    }
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return false;
+    }
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError("");
+    if (!validateForm()) {
+      return;
+    }
+    setSignupData({
+      name,
+      email,
+      password,
+      passwordConfirm,
+    });
 
+    setShowOTP(true);
     try {
-      const res = await fetch("http://localhost:5000/api/v1/auth/register", {
+      const res = await fetch(`${backendUrl}/api/v1/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -46,6 +104,34 @@ export const Signup = () => {
       console.error("Signup error:", error);
       // later you can show a toast
     }
+  };
+  const handleGoogleSignup = () => {
+    // For now, we'll show a message or implement Google OAuth
+    alert("Google signup coming soon!");
+  };
+  const handleOTPSuccess = async (token: string, userData: UserData) => {
+    try {
+      // Store token and user data in your auth context/localStorage
+      if (localStorage) {
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(userData));
+      }
+
+      // Update auth context if needed
+      // You might want to call your auth context's login method here
+
+      console.log("Signup successful!", userData);
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Error handling OTP success:", error);
+      setError("Something went wrong. Please try again.");
+    }
+  };
+
+  // Close OTP modal
+  const handleCloseOTP = () => {
+    setShowOTP(false);
+    setSignupData({ name: "", email: "", password: "", passwordConfirm: "" });
   };
 
   // Handle form submission
@@ -83,7 +169,10 @@ export const Signup = () => {
               {/* Facebook Icon */}
               <FaFacebook className="text-gray-600 w-5 h-5 sm:w-6 sm:h-6" />
             </button>
-            <button className="flex items-center justify-center p-3 rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors duration-200">
+            <button
+              className="flex items-center justify-center p-3 rounded-lg border border-gray-300 hover:bg-gray-100 transition-colors duration-200"
+              onClick={handleGoogleSignup}
+            >
               {/* Google Icon */}
               <FaGoogle className="text-gray-600 w-5 h-5 sm:w-6 sm:h-6" />
             </button>
@@ -219,13 +308,101 @@ export const Signup = () => {
                 </div>
               </div>
             </div>
+            <div>
+              <div className="mt-1 relative rounded-md shadow-sm">
+                <input
+                  type={showPasswordConfirm ? "text" : "password"}
+                  id="passwordConfirm"
+                  value={passwordConfirm}
+                  onChange={(e) => setPasswordConfirm(e.target.value)}
+                  className="block w-full rounded-md border-gray-300 p-3 pl-12 pr-10 text-sm focus:border-blue-500 focus:ring-blue-500"
+                  placeholder="Confirm password"
+                  required
+                />
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 text-gray-400"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                </div>
+                <div
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                  onClick={() => setShowPasswordConfirm(!showPasswordConfirm)}
+                >
+                  {showPasswordConfirm ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-gray-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path
+                        fillRule="evenodd"
+                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-gray-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.957 10.957 0 0019.542 10c-.575-2.87-2.34-5.414-5.186-7.24a10.05 10.05 0 00-9.212 0A10.957 10.957 0 00.458 10c.575 2.87 2.34 5.414 5.186 7.24l-1.473 1.473a1 1 0 000 1.414l1.414-1.414zm9.47-5.226a4 4 0 015.657 5.657l-1.414-1.414a2 2 0 00-2.829-2.829z"
+                        clipRule="evenodd"
+                      />
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                    </svg>
+                  )}
+                </div>
+              </div>
+            </div>
 
             {/* Sign up button */}
             <button
               type="submit"
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-rose-400 hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200"
+              disabled={isLoading}
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-base font-medium text-white bg-rose-400 hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Sign up
+              {isLoading ? (
+                <>
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Creating Account...
+                </>
+              ) : (
+                "Sign up"
+              )}
             </button>
           </form>
 
@@ -247,6 +424,8 @@ export const Signup = () => {
         <NextImage
           src="https://placehold.co/1000x1200/edf5f8/808080?text=Placeholder+Image"
           alt="Abstract background"
+          width={40}
+          height={50}
           className="w-full h-full object-cover"
         />
         <button className="absolute top-4 right-4 p-2 rounded-full bg-white bg-opacity-70 hover:bg-opacity-90 transition-colors duration-200">
@@ -266,6 +445,13 @@ export const Signup = () => {
           </svg>
         </button>
       </div>
+
+      <SignupOTP
+        isOpen={showOTP}
+        onClose={handleCloseOTP}
+        onSuccess={handleOTPSuccess}
+        signupData={signupData}
+      />
     </div>
   );
 };

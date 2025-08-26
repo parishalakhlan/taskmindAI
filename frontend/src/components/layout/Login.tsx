@@ -6,7 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { motion } from "framer-motion";
-import { FaApple, FaGoogle, FaFacebook } from "react-icons/fa";
+import { FaGoogle } from "react-icons/fa";
 
 // Main login form component
 export const Login = () => {
@@ -55,31 +55,30 @@ export const Login = () => {
             Welcome back
           </h1>
           <p className="text-gray-500 text-sm text-center">
-            Please enter your details to sign in
+            Sign in with Google
           </p>
         </motion.div>
 
         {/* Social login buttons */}
-        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+        <div className="flex justify-center">
+          {" "}
+          {/* Centers horizontally */}
           <button className="flex items-center justify-center p-2 sm:p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-200">
             <FaGoogle className="text-gray-600 w-5 h-5 sm:w-6 sm:h-6" />
-          </button>
-          <button className="flex items-center justify-center p-2 sm:p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-200">
-            <FaApple className="text-gray-600 w-5 h-5 sm:w-6 sm:h-6" />
-          </button>
-          <button className="flex items-center justify-center p-2 sm:p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-200">
-            <FaFacebook className="text-gray-600 w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
 
         {/* Separator */}
-        <div className="relative my-4">
+        <div className="relative my-4 flex flex-col gap-y-4">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-gray-300"></span>
           </div>
           <div className="relative flex justify-center text-sm">
             <span className="bg-white px-2 text-gray-500">or</span>
           </div>
+          <p className="text-gray-500 text-sm text-center">
+            Please enter your details to sign in
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
