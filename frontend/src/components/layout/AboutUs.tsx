@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import NextImage from "next/image";
 import { FaGithub, FaLinkedin } from "react-icons/fa";
+import { Navbar } from "@/components/layout/Navbar";
 import {
   Briefcase,
   Code,
@@ -224,160 +225,171 @@ export default function AboutUs() {
   }
 
   return (
-    <AnimatePresence>
-      <motion.div
-        className="bg-white text-gray-900 min-h-screen p-4 sm:p-8 md:p-12 lg:p-16 flex flex-col items-center font-inter"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-      >
-        {/* Main Container */}
+    <>
+      <Navbar />
+      <AnimatePresence>
         <motion.div
-          className="container mx-auto max-w-5xl space-y-16"
-          variants={containerVariants}
-          initial="hidden"
-          animate="show"
+          className="bg-white text-gray-900 min-h-screen p-4 sm:p-8 md:p-12 lg:p-16 flex flex-col items-center font-inter"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
         >
-          {/* Hero Section */}
-          <motion.section
-            className="flex flex-col md:flex-row items-center gap-8 md:gap-16 text-center md:text-left p-6 bg-gray-50 rounded-3xl shadow-xl shadow-gray-200"
-            variants={itemVariants}
-          >
-            <motion.img
-              src={personalInfo.profilePicUrl}
-              alt="Profile Picture"
-              className="w-48 h-48 sm:w-56 sm:h-56 rounded-full object-cover border-4 border-rose-500 shadow-xl transition-transform duration-300 hover:scale-105"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
-            />
-            <motion.div className="flex flex-col items-center md:items-start space-y-4">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight">
-                {" Hi , I'm "}
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-rose-500 to-pink-500">
-                  {personalInfo.name}
-                </span>
-              </h1>
-              <p className="text-xl sm:text-2xl text-gray-700 font-semibold">
-                {personalInfo.tagline}
-              </p>
-              <p className="text-base sm:text-lg text-gray-600 max-w-2xl">
-                {personalInfo.bio}
-              </p>
-            </motion.div>
-          </motion.section>
-
-          {/* Task Management App Section */}
-          <motion.section
-            className="p-6 bg-gray-50 rounded-3xl shadow-xl shadow-gray-200"
-            variants={itemVariants}
-          >
-            <div className="flex items-center gap-4 mb-6">
-              <Code size={36} className="text-rose-500" />
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                My Application: {appInfo.name}
-              </h2>
-            </div>
-            <p className="text-lg text-gray-600 mb-8">{appInfo.description}</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              {appInfo.features.map((feature, index) => (
-                <motion.div
-                  key={index}
-                  className="bg-gray-100 p-6 rounded-2xl flex flex-col items-center text-center space-y-4 transition-transform duration-300 hover:scale-105 hover:bg-pink-100"
-                  variants={itemVariants}
-                >
-                  <div className="text-rose-500 p-3 bg-white rounded-full">
-                    {feature.icon}
-                  </div>
-                  <h3 className="text-xl font-semibold text-gray-900">
-                    {feature.name}
-                  </h3>
-                  <p className="text-sm text-gray-600">{feature.description}</p>
-                </motion.div>
-              ))}
-            </div>
-          </motion.section>
-
-          {/* Skills & Education Section */}
-          <motion.section
-            className="grid grid-cols-1 md:grid-cols-2 gap-8"
+          {/* Main Container */}
+          <motion.div
+            className="container mx-auto max-w-5xl space-y-16"
             variants={containerVariants}
+            initial="hidden"
+            animate="show"
           >
-            {/* Skills */}
-            <motion.div
+            {/* Hero Section */}
+            <motion.section
+              className="flex flex-col md:flex-row items-center gap-8 md:gap-16 text-center md:text-left p-6 bg-gray-50 rounded-3xl shadow-xl shadow-gray-200"
+              variants={itemVariants}
+            >
+              <motion.img
+                src={personalInfo.profilePicUrl}
+                alt="Profile Picture"
+                className="w-48 h-48 sm:w-56 sm:h-56 rounded-full object-cover border-4 border-rose-500 shadow-xl transition-transform duration-300 hover:scale-105"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 100 }}
+              />
+              <motion.div className="flex flex-col items-center md:items-start space-y-4">
+                <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 leading-tight">
+                  {" Hi , I'm "}
+                  <span className="bg-clip-text text-transparent bg-gradient-to-r from-rose-500 to-pink-500">
+                    {personalInfo.name}
+                  </span>
+                </h1>
+                <p className="text-xl sm:text-2xl text-gray-700 font-semibold">
+                  {personalInfo.tagline}
+                </p>
+                <p className="text-base sm:text-lg text-gray-600 max-w-2xl">
+                  {personalInfo.bio}
+                </p>
+              </motion.div>
+            </motion.section>
+
+            {/* Task Management App Section */}
+            <motion.section
               className="p-6 bg-gray-50 rounded-3xl shadow-xl shadow-gray-200"
               variants={itemVariants}
             >
               <div className="flex items-center gap-4 mb-6">
                 <Code size={36} className="text-rose-500" />
-                <h2 className="text-3xl font-bold text-gray-900">My Skills</h2>
+                <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
+                  My Application: {appInfo.name}
+                </h2>
               </div>
-              <div className="flex flex-wrap gap-4">
-                {skills.map((skill, index) => (
+              <p className="text-lg text-gray-600 mb-8">
+                {appInfo.description}
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                {appInfo.features.map((feature, index) => (
                   <motion.div
                     key={index}
-                    className="flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm font-medium transition-transform duration-300 hover:scale-105 hover:bg-pink-100 hover:text-gray-900"
+                    className="bg-gray-100 p-6 rounded-2xl flex flex-col items-center text-center space-y-4 transition-transform duration-300 hover:scale-105 hover:bg-pink-100"
                     variants={itemVariants}
                   >
-                    {skill.icon}
-                    <span>{skill.name}</span>
+                    <div className="text-rose-500 p-3 bg-white rounded-full">
+                      {feature.icon}
+                    </div>
+                    <h3 className="text-xl font-semibold text-gray-900">
+                      {feature.name}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      {feature.description}
+                    </p>
                   </motion.div>
                 ))}
               </div>
-            </motion.div>
+            </motion.section>
 
-            {/* Education */}
-            <motion.div
+            {/* Skills & Education Section */}
+            <motion.section
+              className="grid grid-cols-1 md:grid-cols-2 gap-8"
+              variants={containerVariants}
+            >
+              {/* Skills */}
+              <motion.div
+                className="p-6 bg-gray-50 rounded-3xl shadow-xl shadow-gray-200"
+                variants={itemVariants}
+              >
+                <div className="flex items-center gap-4 mb-6">
+                  <Code size={36} className="text-rose-500" />
+                  <h2 className="text-3xl font-bold text-gray-900">
+                    My Skills
+                  </h2>
+                </div>
+                <div className="flex flex-wrap gap-4">
+                  {skills.map((skill, index) => (
+                    <motion.div
+                      key={index}
+                      className="flex items-center gap-2 bg-gray-100 text-gray-700 px-4 py-2 rounded-full text-sm font-medium transition-transform duration-300 hover:scale-105 hover:bg-pink-100 hover:text-gray-900"
+                      variants={itemVariants}
+                    >
+                      {skill.icon}
+                      <span>{skill.name}</span>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Education */}
+              <motion.div
+                className="p-6 bg-gray-50 rounded-3xl shadow-xl shadow-gray-200"
+                variants={itemVariants}
+              >
+                <div className="flex items-center gap-4 mb-6">
+                  <GraduationCap size={36} className="text-rose-500" />
+                  <h2 className="text-3xl font-bold text-gray-900">
+                    Education
+                  </h2>
+                </div>
+                <div className="space-y-4">
+                  <motion.div variants={itemVariants}>
+                    <h3 className="text-xl font-semibold text-gray-900">
+                      Bachelor of Computer Science and Technology
+                    </h3>
+                    <p className="text-gray-600">
+                      Guru Jambeshwar University of Science
+                      <br /> and Technology,2026
+                    </p>
+                  </motion.div>
+                </div>
+              </motion.div>
+            </motion.section>
+
+            {/* Portfolio & Socials Section */}
+            <motion.section
               className="p-6 bg-gray-50 rounded-3xl shadow-xl shadow-gray-200"
               variants={itemVariants}
             >
               <div className="flex items-center gap-4 mb-6">
-                <GraduationCap size={36} className="text-rose-500" />
-                <h2 className="text-3xl font-bold text-gray-900">Education</h2>
+                <ExternalLink size={36} className="text-rose-500" />
+                <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
+                  Connect with Me
+                </h2>
               </div>
-              <div className="space-y-4">
-                <motion.div variants={itemVariants}>
-                  <h3 className="text-xl font-semibold text-gray-900">
-                    Bachelor of Computer Science and Technology
-                  </h3>
-                  <p className="text-gray-600">
-                    Guru Jambeshwar University of Science
-                    <br /> and Technology,2026
-                  </p>
-                </motion.div>
+              <div className="flex flex-wrap justify-center gap-6 md:justify-start">
+                {socialLinks.map((link, index) => (
+                  <motion.a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-2 p-3 bg-gray-100 rounded-full transition-colors duration-300 hover:bg-pink-100 text-gray-700 hover:text-gray-900"
+                    variants={itemVariants}
+                  >
+                    {link.icon}
+                    <span className="font-medium">{link.name}</span>
+                  </motion.a>
+                ))}
               </div>
-            </motion.div>
-          </motion.section>
-
-          {/* Portfolio & Socials Section */}
-          <motion.section
-            className="p-6 bg-gray-50 rounded-3xl shadow-xl shadow-gray-200"
-            variants={itemVariants}
-          >
-            <div className="flex items-center gap-4 mb-6">
-              <ExternalLink size={36} className="text-rose-500" />
-              <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-                Connect with Me
-              </h2>
-            </div>
-            <div className="flex flex-wrap justify-center gap-6 md:justify-start">
-              {socialLinks.map((link, index) => (
-                <motion.a
-                  key={index}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-3 bg-gray-100 rounded-full transition-colors duration-300 hover:bg-pink-100 text-gray-700 hover:text-gray-900"
-                  variants={itemVariants}
-                >
-                  {link.icon}
-                  <span className="font-medium">{link.name}</span>
-                </motion.a>
-              ))}
-            </div>
-          </motion.section>
+            </motion.section>
+          </motion.div>
         </motion.div>
-      </motion.div>
-    </AnimatePresence>
+      </AnimatePresence>
+    </>
   );
 }

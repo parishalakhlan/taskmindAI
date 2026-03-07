@@ -137,24 +137,11 @@ export const Signup = () => {
   // Handle form submission
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-gray-50 font-sans">
+    <div className="flex flex-col lg:flex-row h-full bg-gray-50 font-sans ">
       {/* Left side with the form */}
-      <div className="lg:w-1/2 flex items-center justify-center p-6 sm:p-8 lg:p-12">
-        <div className="w-full max-w-md">
+      <div className="lg:w-1/2 flex items-center justify-center px-6 py-4 sm:px-8 sm:py-6 lg:px-12 lg:py-8  overflow-y-auto lg:overflow-hidden">
+        <div className="w-full max-w-md max-h-full">
           {/* Header */}
-          <div className="flex items-center justify-center lg:justify-start mb-6">
-            <motion.div
-              className="w-10 h-10 bg-rose-500 rounded-lg flex items-center justify-center"
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 260, damping: 20 }}
-            >
-              <span className="font-bold text-light-blue text-xl">T</span>
-            </motion.div>
-            <span className="ml-2 text-2xl font-bold text-gray-900">
-              TaskMind AI
-            </span>
-          </div>
 
           <h1 className="text-center lg:text-left text-3xl font-extrabold text-gray-900 mb-2">
             Sign up to TaskMind AI
@@ -206,6 +193,7 @@ export const Signup = () => {
                   className="block w-full rounded-md border-gray-300 p-3 pl-12 text-sm focus:border-blue-500 focus:ring-blue-500"
                   placeholder="Your name"
                   required
+                  suppressHydrationWarning
                 />
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <svg
@@ -231,6 +219,7 @@ export const Signup = () => {
                   className="block w-full rounded-md border-gray-300 p-3 pl-12 text-sm focus:border-blue-500 focus:ring-blue-500"
                   placeholder="Email address"
                   required
+                  suppressHydrationWarning
                 />
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <svg
@@ -257,6 +246,7 @@ export const Signup = () => {
                   className="block w-full rounded-md border-gray-300 p-3 pl-12 pr-10 text-sm focus:border-blue-500 focus:ring-blue-500"
                   placeholder="Password"
                   required
+                  suppressHydrationWarning
                 />
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <svg
@@ -422,28 +412,11 @@ export const Signup = () => {
       {/* Right side with the image */}
       <div className="hidden lg:block lg:w-1/2 relative">
         <NextImage
-          src="https://placehold.co/1000x1200/edf5f8/808080?text=Placeholder+Image"
+          src="/signup_photo.jpg"
           alt="Abstract background"
-          width={40}
-          height={50}
+          fill
           className="w-full h-full object-cover"
         />
-        <button className="absolute top-4 right-4 p-2 rounded-full bg-white bg-opacity-70 hover:bg-opacity-90 transition-colors duration-200">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 text-gray-600"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M6 18L18 6M6 6l12 12"
-            />
-          </svg>
-        </button>
       </div>
 
       <SignupOTP

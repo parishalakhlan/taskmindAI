@@ -161,7 +161,7 @@ export const HeroSection = () => {
           >
             Be productive, Be more with{" "}
             <span className="relative inline-block">
-              TaskMind AI
+              TaskMind
               <span className="absolute bottom-1 left-0 w-full h-1 bg-gradient-to-r from-[#6a82fb] to-[#fc5c7d]"></span>
             </span>
           </motion.h1>
@@ -175,7 +175,8 @@ export const HeroSection = () => {
               Because your brain is doing 100 things — let TaskMind do the rest.{" "}
             </span>
             <br />
-            An AI that organizes your world the way you actually live it.
+            An application that organizes your world the way you actually live
+            it.
           </motion.p>
         </motion.div>
       </div>

@@ -6,72 +6,76 @@ interface AuthProviderProps {
   children: ReactNode;
 }
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_PUBLIC_URL;
+
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
+  // Initialize user from localStorage
   const [user, setUser] = useState<User | null>(() => {
     if (typeof window !== "undefined") {
       try {
         const savedUser = localStorage.getItem("user");
-        console.log("Initializing user state with:", savedUser); // Add this
         if (savedUser && savedUser !== "undefined") {
-          const parsedUser = JSON.parse(savedUser);
-          console.log("Parsed user:", parsedUser); // Add this
-          return parsedUser;
+          return JSON.parse(savedUser);
         }
       } catch (err) {
         console.error("Failed to parse saved user:", err);
       }
     }
-    console.log("Returning null for user state"); // Add this
     return null;
   });
 
-  const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+  // FIX: Initialize token from localStorage
+  const [token, setToken] = useState<string | null>(() => {
     if (typeof window !== "undefined") {
-      const savedUser = localStorage.getItem("user");
-      const savedToken = localStorage.getItem("authToken");
-      return !!(savedUser && savedToken); // Returns true if both exist
+      return localStorage.getItem("authToken");
     }
-    return false;
+    return null;
   });
+
+  const [loading, setLoading] = useState<boolean>(true); // Start true until we check auth
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+
   // Check for existing authentication on mount
   useEffect(() => {
     const checkAuthStatus = async () => {
-      console.log("checkAuthStatus running..."); // Add this
+      console.log("checkAuthStatus running...");
+      console.log("Token from state:", token);
 
       try {
-        const storedToken = localStorage.getItem("authToken");
-        console.log("Token found:", storedToken ? "Yes" : "No");
-        if (storedToken) {
-          // Verify token with backend
+        // If we have a token in state, verify it
+        if (token) {
+          console.log("Verifying token with backend...");
+
           const response = await fetch(`${backendUrl}/api/v1/auth/check-auth`, {
             method: "GET",
             headers: {
-              Authorization: `Bearer ${storedToken}`,
+              Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
-              //    "Cache-Control": "no-cache", // Add this
-              //     Pragma: "no-cache",
             },
           });
-          console.log("Whether getting response");
+
           if (response.ok) {
             const userData = await response.json();
             setUser(userData.user);
-            setToken(storedToken);
             setIsAuthenticated(true);
+            console.log("Token verified, user authenticated");
           } else {
             // Token is invalid, clear it
+            console.log("Token invalid, clearing...");
             localStorage.removeItem("authToken");
+            localStorage.removeItem("user");
             setToken(null);
             setUser(null);
             setIsAuthenticated(false);
           }
+        } else {
+          // No token, not authenticated
+          console.log("No token found, user not authenticated");
+          setIsAuthenticated(false);
         }
       } catch (error) {
         console.error("Auth check failed:", error);
-        // Clear invalid auth state
         localStorage.removeItem("authToken");
+        localStorage.removeItem("user");
         setToken(null);
         setUser(null);
         setIsAuthenticated(false);
@@ -81,10 +85,11 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     };
 
     checkAuthStatus();
-  }, []);
+  }, [token]); // Add token as dependency
 
   const login = async (email: string, password: string): Promise<void> => {
     setLoading(true);
+    console.log("Login attempt for:", email);
 
     try {
       const response = await fetch(`${backendUrl}/api/v1/auth/login`, {
@@ -95,38 +100,43 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: JSON.stringify({ email, password }),
       });
 
+      console.log("Login response status:", response.status);
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Login failed");
       }
 
       const data = await response.json();
+      console.log("Login successful, received data:", data);
 
       // Store token and user data
       localStorage.setItem("authToken", data.token);
-      localStorage.setItem("user", JSON.stringify(data.user)); // or however you store user data
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // Update state
       setToken(data.token);
       setUser(data.user);
       setIsAuthenticated(true);
-      console.log("data of user", data.user);
+
+      console.log("Auth state updated, token set:", data.token);
     } catch (error) {
       console.error("Login error:", error);
-      throw error; // Re-throw to handle in component
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
   const logout = (): void => {
-    // Clear all auth state
+    console.log("Logging out...");
     localStorage.removeItem("authToken");
+    localStorage.removeItem("user");
     setToken(null);
     setUser(null);
     setIsAuthenticated(false);
-    setLoading(false);
   };
 
-  // This is the value object that implements your AuthContextType interface
   const value: AuthContextType = {
     user,
     token,
@@ -135,6 +145,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
   };
+
+  console.log("AuthProvider state:", { user, token, loading, isAuthenticated }); // Add this
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

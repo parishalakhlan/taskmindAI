@@ -19,42 +19,44 @@ export const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       await login(email, password);
-      console.log("Login successful");
+      console.log("Login successful, redirecting...");
       router.push("/dashboard");
-      // Optional: redirect to dashboard
     } catch (err) {
       console.error("Login failed", err);
-      // Later: show toast or error message
+      // Show error to user
+      alert(err.message || "Login failed");
     }
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-900 font-sans p-4">
-      <div className="w-full max-w-sm sm:max-w-md bg-white rounded-xl shadow-2xl p-6 sm:p-8 space-y-5 sm:space-y-6 md:p-10">
+    <div className="min-h-screen flex items-center justify-center bg-gray-900 font-sans px-1.5 sm:px-4">
+      <div
+        className="
+    w-full
+    max-w-sm sm:max-w-md
+    bg-white
+    rounded-xl
+    shadow-2xl
+    p-5 sm:p-6 md:p-8
+    space-y-4 sm:space-y-5
+  "
+      >
         {/* Header with icon and text */}
         <motion.div
           className="flex flex-col items-center justify-center space-y-3 sm:space-y-4"
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{
-            type: "spring",
-            stiffness: 100,
-            damping: 15,
-            mass: 0.5,
-          }}
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4 }}
         >
-          <div className="w-9 h-9 sm:w-10 sm:h-10 bg-rose-500 rounded-lg flex items-center justify-center">
-            <span className="font-bold text-white text-lg sm:text-xl">T</span>
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight text-center">
+          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 text-center">
             Welcome back
           </h1>
-          <p className="text-gray-500 text-sm text-center">
+          <p className="text-xs sm:text-sm text-gray-500 text-center">
             Sign in with Google
           </p>
         </motion.div>
@@ -96,7 +98,13 @@ export const Login = () => {
                 id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="block w-full rounded-md border-gray-300 p-2 sm:p-3 pr-10 text-sm focus:border-rose-500 focus:ring-rose-500"
+                className=" block w-full 
+    rounded-md 
+    border-gray-300 
+    px-3 py-2 sm:py-3
+    text-sm sm:text-base
+    focus:border-rose-500 
+    focus:ring-rose-500"
                 placeholder="Enter your email"
                 required
               />
@@ -120,7 +128,13 @@ export const Login = () => {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="block w-full rounded-md border-gray-300 p-2 sm:p-3 pr-10 text-sm focus:border-rose-500 focus:ring-rose-500"
+                className="  block w-full 
+    rounded-md 
+    border-gray-300 
+    px-3 py-2 sm:py-3
+    text-sm sm:text-base
+    focus:border-rose-500 
+    focus:ring-rose-500"
                 placeholder="Enter your password"
                 required
               />

@@ -28,14 +28,14 @@ interface Suggestion {
 interface CreateTaskData {
   title: string;
   description?: string;
-  priority?: string;
+  priority?: "High" | "Medium" | "Low";
   deadline?: string;
 }
 
 interface UpdateTaskData {
   title?: string;
   description?: string;
-  priority?: string;
+  priority?: "High" | "Medium" | "Low";
   deadline?: string;
   completed?: boolean;
   updatedAt?: string;
@@ -75,7 +75,7 @@ const TaskContext = createContext<TaskContextType | undefined>(undefined);
 interface TaskProviderProps {
   children: ReactNode;
 }
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_PUBLIC_URL;
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_DEV_URL;
 // Task Provider Component
 export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const { token } = useAuth();
@@ -180,7 +180,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   // Update Task
   const updateTask = async (
     id: string,
-    updates: UpdateTaskData
+    updates: UpdateTaskData,
   ): Promise<boolean> => {
     if (!token) return false;
 
@@ -207,14 +207,9 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
                 ...task,
                 ...updates,
                 updatedAt: new Date().toISOString(),
-                priority: updates.priority as
-                  | "High"
-                  | "Medium"
-                  | "Low"
-                  | undefined,
               }
-            : task
-        )
+            : task,
+        ),
       );
 
       toast.success("Task updated successfully");
@@ -243,7 +238,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       if (!res.ok) throw new Error("Delete failed");
 
       setTasks((prevTasks) => prevTasks.filter((task) => task._id !== id));
-      toast.success("Task deleted successfully");
+
       return true;
     } catch (err) {
       console.error("Error deleting task:", err);
@@ -271,14 +266,14 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
               completed: !task.completed,
               completedAt: !task.completed ? new Date().toISOString() : null,
             }
-          : task
-      )
+          : task,
+      ),
     );
 
     try {
       console.log(
         "2. Making API call to:",
-        `http://localhost:5000/api/v1/tasks/${id}/toggle-completion`
+        `http://localhost:5000/api/v1/tasks/${id}/toggle-completion`,
       );
       const res = await fetch(
         `${backendUrl}/api/v1/tasks/${id}/toggle-completion`,
@@ -288,7 +283,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       console.log("3. API response status:", res.status);
@@ -303,8 +298,8 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       // Update with server response to ensure consistency
       setTasks((prevTasks) =>
         prevTasks.map((task) =>
-          task._id === id ? { ...task, ...data.data.task } : task
-        )
+          task._id === id ? { ...task, ...data.data.task } : task,
+        ),
       );
 
       return true;

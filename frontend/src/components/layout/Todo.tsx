@@ -25,7 +25,51 @@ export const TaskItem = ({ task }: { task: Task }) => {
   const isEditing = editingTaskId === task._id;
   const isUpdating = updating && editingTaskId === task._id;
   const isDeleting = deletingId === task._id;
-
+  const showDeleteConfirmation = (taskId: string, taskTitle: string) => {
+    toast.custom(
+      (t) => (
+        <div
+          className={`${
+            t.visible ? "animate-enter" : "animate-leave"
+          } max-w-md w-full bg-white shadow-xl rounded-2xl pointer-events-auto flex ring-1 ring-rose-200 ring-opacity-50 border border-rose-100`}
+        >
+          <div className="flex-1 w-0 p-4">
+            <div className="flex items-start">
+              <div className="ml-3 flex-1">
+                <p className="text-sm font-medium text-gray-900">
+                  Delete &quot;{taskTitle}&quot;?
+                </p>
+                <p className="mt-1 text-sm text-gray-500">
+                  This action cannot be undone.
+                </p>
+              </div>
+            </div>
+          </div>
+          <div className="flex border-l border-rose-200">
+            <button
+              onClick={() => {
+                toast.dismiss(t.id);
+                deleteTask(taskId).then((success: boolean) => {
+                  if (success) toast.success("Task deleted");
+                  else toast.error("Delete failed");
+                });
+              }}
+              className="w-full border border-transparent rounded-none rounded-l-lg p-4 flex items-center justify-center text-sm font-medium bg-rose-500 text-white hover:bg-rose-600 focus:outline-none"
+            >
+              Delete
+            </button>
+            <button
+              onClick={() => toast.dismiss(t.id)}
+              className="w-full border border-transparent rounded-none rounded-r-lg p-4 flex items-center justify-center text-sm font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 focus:outline-none"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      ),
+      { duration: 10000 },
+    );
+  };
   const handleUpdate = async () => {
     if (!editedTitle.trim()) {
       toast.error("Title is required");
@@ -38,11 +82,9 @@ export const TaskItem = ({ task }: { task: Task }) => {
     }
   };
 
-  const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this task?")) return;
-    await deleteTask(task._id);
+  const handleDelete = () => {
+    showDeleteConfirmation(task._id, task.title);
   };
-
   // In your task component where you have the check circle
   const handleToggleComplete = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -150,10 +192,10 @@ export const TaskItem = ({ task }: { task: Task }) => {
             <span
               className={`hidden md:inline-flex px-3 py-1 text-xs font-medium rounded-full shadow-inner ${
                 task.priority === "High"
-                  ? "bg-red-50 text-red-700"
+                  ? "  bg-green-50 text-green-700"
                   : task.priority === "Medium"
-                  ? "bg-yellow-50 text-yellow-700"
-                  : "bg-green-50 text-green-700"
+                    ? "bg-yellow-50 text-yellow-700"
+                    : "bg-red-50 text-red-700"
               }`}
             >
               {task.priority}
@@ -262,7 +304,7 @@ const AddEditModal = ({ isOpen, onClose }: AddEditModalProps) => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center p-4"
+          className="absolute inset-0 bg-gray-900 bg-opacity-75 z-50 flex items-center justify-center p-4"
         >
           <motion.div
             initial={{ scale: 0.9, y: 20 }}
@@ -276,6 +318,7 @@ const AddEditModal = ({ isOpen, onClose }: AddEditModalProps) => {
               </h2>
               <button
                 onClick={onClose}
+                aria-label="Close modal"
                 className="text-gray-400 hover:text-gray-600 transition-colors"
               >
                 <X size={24} />
@@ -320,6 +363,7 @@ const AddEditModal = ({ isOpen, onClose }: AddEditModalProps) => {
               <div className="flex items-center gap-2">
                 <input
                   type="checkbox"
+                  id="include-ai"
                   checked={includeAI}
                   onChange={(e) => {
                     setIncludeAI(e.target.checked);
@@ -330,7 +374,7 @@ const AddEditModal = ({ isOpen, onClose }: AddEditModalProps) => {
                     }
                   }}
                 />
-                <label className="text-sm text-gray-700">
+                <label className="text-sm text-gray-700" htmlFor="include-ai">
                   Include AI Suggestions
                 </label>
               </div>
@@ -429,7 +473,7 @@ export const TodoPage = () => {
   const toggleModal = () => setIsModalOpen(!isModalOpen);
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-800 antialiased p-4 sm:p-8">
+    <div className="relative bg-gray-50 font-sans text-gray-800 antialiased p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
         <header className="flex justify-between items-center mb-8 p-4 sm:p-6 bg-white rounded-3xl shadow-xl">
           <div className="flex items-center space-x-2">

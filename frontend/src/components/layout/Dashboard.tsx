@@ -1,9 +1,22 @@
 "use client";
+/**   
+ *      import React, { useState, useEffect } from "react";
+// ... other imports
 
+export const Dashboard: React.FC = () => {
+  const { isAuthenticated, user, loading } = useAuth(); // add loading
+  const [mounted, setMounted] = useState(false);
+  // ... other state and hooks
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+ */
+
+import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import React, { useState } from "react";
+
 import { useTask } from "@/context/TaskContext";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -21,9 +34,15 @@ import {
 } from "lucide-react";
 
 export const Dashboard: React.FC = () => {
-  const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, loading } = useAuth(); // add loading
+  const [mounted, setMounted] = useState(false);
+
   const { tasks } = useTask();
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const router = useRouter();
   const totalTasks = tasks.length;
@@ -31,10 +50,14 @@ export const Dashboard: React.FC = () => {
   const completionPercentage =
     totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (mounted && !loading && !isAuthenticated) {
       router.push("/login");
     }
-  }, [isAuthenticated, router]);
+  }, [mounted, loading, isAuthenticated, router]);
+
+  if (!mounted || loading) {
+    return <p className="text-center mt-10">Loading...</p>;
+  }
 
   if (!isAuthenticated) {
     return <p className="text-center mt-10">Redirecting to login...</p>;
@@ -145,7 +168,7 @@ export const Dashboard: React.FC = () => {
   const weekDaysWithTasks = groupTasksByDay();
   const maxValue = Math.max(
     ...weekDaysWithTasks.map((day) => day.taskCount),
-    1
+    1,
   );
 
   const ProgressChart = ({ percent }: { percent: number }) => {
@@ -185,8 +208,8 @@ export const Dashboard: React.FC = () => {
               hoveredSection === "completed"
                 ? 0.5
                 : hoveredSection === "undone"
-                ? 1
-                : 1
+                  ? 1
+                  : 1
             }
             onMouseEnter={() => setHoveredSection("undone")}
             onMouseLeave={() => setHoveredSection(null)}
@@ -207,8 +230,8 @@ export const Dashboard: React.FC = () => {
               hoveredSection === "undone"
                 ? 0.5
                 : hoveredSection === "completed"
-                ? 1
-                : 1
+                  ? 1
+                  : 1
             }
             onMouseEnter={() => setHoveredSection("completed")}
             onMouseLeave={() => setHoveredSection(null)}
@@ -505,8 +528,8 @@ export const Dashboard: React.FC = () => {
                             i === 0
                               ? "bottom-1"
                               : i === 3
-                              ? "top-1"
-                              : `top-[${100 - value * 100}%]`
+                                ? "top-1"
+                                : `top-[${100 - value * 100}%]`
                           }`}
                         >
                           {labelValue}
@@ -780,7 +803,7 @@ export const Dashboard: React.FC = () => {
                         </span>
                       )}
                     </motion.div>
-                  )
+                  ),
                 )}
               </div>
             </div>
