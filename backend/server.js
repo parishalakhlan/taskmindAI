@@ -27,7 +27,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Middleware
 const allowedOrigins = [
-  "http://localhost:3000", // local dev
   "https://taskmind-ai-one.vercel.app", // deployed frontend
 ];
 app.use(
@@ -41,7 +40,7 @@ app.use(
       "Cache-Control", // Add this
       "Pragma",
     ],
-  })
+  }),
 );
 app.use(helmet());
 app.use(morgan("dev"));
@@ -68,11 +67,11 @@ app.use(
         " method " +
         req.method +
         "  path  " +
-        req.path
+        req.path,
     );
     next();
   },
-  taskRoutes
+  taskRoutes,
 );
 app.use("/api/v1/tasks", authMiddleware, taskRoutes); // Protect tasks
 app.use("/api/profile", profileRoutes);
