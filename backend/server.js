@@ -105,3 +105,9 @@ process.on("uncaughtException", (err) => {
 process.on("unhandledRejection", (err) => {
   console.log("Unhandled Rejection:", err);
 });
+
+console.log("ENV CHECK:", {
+  mongo: process.env.MONGODB_URI ? "exists" : "missing",
+  jwt: process.env.JWT_SECRET ? "exists" : "missing",
+  email: process.env.EMAIL_USER ? "exists" : "missing",
+});
