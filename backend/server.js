@@ -59,20 +59,7 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/ai", aiRoutes);
-app.use(
-  "/api/v1/tasks",
-  (req, res, next) => {
-    console.log(
-      "Route /api/v1/tasks hit:" +
-        " method " +
-        req.method +
-        "  path  " +
-        req.path,
-    );
-    next();
-  },
-  taskRoutes,
-);
+
 app.use("/api/v1/tasks", authMiddleware, taskRoutes); // Protect tasks
 app.use("/api/profile", profileRoutes);
 
