@@ -75,7 +75,7 @@ const TaskContext = createContext<TaskContextType | undefined>(undefined);
 interface TaskProviderProps {
   children: ReactNode;
 }
-const backendUrl = process.env.NEXT_PUBLIC_BACKEND_DEV_URL;
+const backendUrl = process.env.NEXT_PUBLIC_BACKEND_PUBLIC_URL;
 // Task Provider Component
 export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
   const { token } = useAuth();

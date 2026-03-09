@@ -33,7 +33,7 @@ export default function ProfilePage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
-
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_PUBLIC_URL;
   // Fetch user profile data
   const fetchProfile = useCallback(async () => {
     console.log("Fetching user profile...");
@@ -45,13 +45,13 @@ export default function ProfilePage() {
       }
 
       const res = await fetch(
-        `http://localhost:5000/api/profile/user/${authUser._id}`,
+        `${backendUrl}/api/profile/user/${authUser._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
           credentials: "include",
-        }
+        },
       );
 
       if (!res.ok) {
@@ -79,7 +79,7 @@ export default function ProfilePage() {
     } finally {
       setLoading(false);
     }
-  }, [token, authUser, setProfile]);
+  }, [token, authUser, setProfile, backendUrl]);
   useEffect(() => {
     if (token && authUser?._id) fetchProfile();
   }, [token, authUser?._id, fetchProfile]);
@@ -168,7 +168,7 @@ export default function ProfilePage() {
             currentPassword,
             newPassword,
           }),
-        }
+        },
       );
 
       const data = await res.json();
@@ -333,7 +333,7 @@ export default function ProfilePage() {
                         year: "numeric",
                         month: "long",
                         day: "numeric",
-                      }
+                      },
                     )}
                   </p>
                 </div>
