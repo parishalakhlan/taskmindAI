@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { FaApple, FaGoogle, FaFacebook } from "react-icons/fa";
-import { motion } from "framer-motion";
+
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";

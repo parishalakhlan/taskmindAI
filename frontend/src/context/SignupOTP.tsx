@@ -57,7 +57,7 @@ export const SignupOTP: React.FC<SignupOTPProps> = ({
             "Content-Type": "application/json",
           },
           body: JSON.stringify(requestData),
-        }
+        },
       );
 
       const data = await response.json();
@@ -114,7 +114,7 @@ export const SignupOTP: React.FC<SignupOTPProps> = ({
             passwordConfirm: signupData.passwordConfirm,
             otp: otpCode,
           }),
-        }
+        },
       );
 
       const data = await response.json();
@@ -229,6 +229,7 @@ export const SignupOTP: React.FC<SignupOTPProps> = ({
                     maxLength={1}
                     value={digit}
                     onChange={(e) => handleOtpChange(index, e.target.value)}
+                    aria-label={`Digit ${index + 1} of verification code`}
                     onKeyDown={(e) => handleKeyDown(index, e)}
                     className="w-12 h-12 text-center text-xl font-bold border-2 border-gray-300 rounded-lg focus:border-rose-500 focus:outline-none transition-colors"
                     disabled={isVerifying}
@@ -288,6 +289,7 @@ export const SignupOTP: React.FC<SignupOTPProps> = ({
           {/* Close Button */}
           <button
             onClick={onClose}
+            aria-label={` of verification code`}
             className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
           >
             <svg
@@ -398,7 +400,7 @@ export const LoginOTP: React.FC<LoginOTPProps> = ({
             email,
             otp: otpCode,
           }),
-        }
+        },
       );
 
       const data = await response.json();
@@ -411,7 +413,7 @@ export const LoginOTP: React.FC<LoginOTPProps> = ({
       onClose();
     } catch (err: unknown) {
       setError(
-        err instanceof Error ? err.message : " OTP verification failed !"
+        err instanceof Error ? err.message : " OTP verification failed !",
       );
     } finally {
       setIsVerifying(false);
@@ -503,6 +505,7 @@ export const LoginOTP: React.FC<LoginOTPProps> = ({
                 {otp.map((digit, index) => (
                   <input
                     key={index}
+                    aria-label={`Digit ${index + 1} of verification code`}
                     ref={(el) => {
                       inputRefs.current[index] = el;
                     }}
@@ -570,6 +573,7 @@ export const LoginOTP: React.FC<LoginOTPProps> = ({
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
+            aria-label="Close"
           >
             <svg
               className="w-6 h-6"

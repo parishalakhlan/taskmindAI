@@ -279,7 +279,7 @@ const AddEditModal = ({ isOpen, onClose }: AddEditModalProps) => {
     const task = await createTask({
       title,
       description,
-      priority,
+      priority: priority as "High" | "Medium" | "Low" | undefined,
       deadline: deadline || undefined,
     });
 

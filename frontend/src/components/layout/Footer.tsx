@@ -172,7 +172,8 @@ export const HeroSection = () => {
           >
             <span className="font-semibold">
               {" "}
-              Because your brain is doing 100 things — let TaskMind do the rest.{" "}
+              Because your brain is doing 100 things — let TaskMind do the
+              rest.{" "}
             </span>
             <br />
             An application that organizes your world the way you actually live
@@ -359,6 +360,7 @@ export const FeaturesSection = () => {
         whileHover="hover"
       >
         <button
+          aria-label="Close"
           onClick={() => {
             const targetSection = document.getElementById("next-section-id");
             if (targetSection) {

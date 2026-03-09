@@ -19,7 +19,7 @@ export const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   // Handle form submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -28,8 +28,11 @@ export const Login = () => {
       router.push("/dashboard");
     } catch (err) {
       console.error("Login failed", err);
-      // Show error to user
-      alert(err.message || "Login failed");
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("Login failed");
+      }
     }
   };
 
@@ -65,7 +68,10 @@ export const Login = () => {
         <div className="flex justify-center">
           {" "}
           {/* Centers horizontally */}
-          <button className="flex items-center justify-center p-2 sm:p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-200">
+          <button
+            className="flex items-center justify-center p-2 sm:p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-200"
+            aria-label="Sign in with Google"
+          >
             <FaGoogle className="text-gray-600 w-5 h-5 sm:w-6 sm:h-6" />
           </button>
         </div>
@@ -192,10 +198,11 @@ export const Login = () => {
         {/* Create account link */}
         <div className="text-center text-sm text-gray-500 mt-5">
           {"Don't have an account? "}
-          <Link href="/signup">
-            <p className="font-medium text-rose-500 hover:text-rose-700">
-              Create account
-            </p>
+          <Link
+            href="/signup"
+            className="font-medium text-rose-500 hover:text-rose-700"
+          >
+            Create account
           </Link>
         </div>
       </div>

@@ -1,17 +1,4 @@
 "use client";
-/**   
- *      import React, { useState, useEffect } from "react";
-// ... other imports
-
-export const Dashboard: React.FC = () => {
-  const { isAuthenticated, user, loading } = useAuth(); // add loading
-  const [mounted, setMounted] = useState(false);
-  // ... other state and hooks
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
- */
 
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
@@ -327,6 +314,7 @@ export const Dashboard: React.FC = () => {
           <button
             className="lg:hidden text-gray-500 hover:text-gray-700 p-1"
             onClick={() => setIsSidebarOpen(false)}
+            aria-label="Close sidebar"
           >
             <X size={20} />
           </button>
@@ -362,6 +350,7 @@ export const Dashboard: React.FC = () => {
           <button
             className="text-gray-500 hover:text-gray-700 p-1"
             onClick={() => setIsSidebarOpen(true)}
+            aria-label="Open sidebar"
           >
             <Menu size={20} />
           </button>
@@ -535,8 +524,7 @@ export const Dashboard: React.FC = () => {
                           {labelValue}
                         </span>
                         <div
-                          className="absolute left-6 right-0 h-px bg-gray-200"
-                          style={{ bottom: `${value * 100}%` }}
+                          className={`absolute left-6 right-0 h-px bg-gray-200 bottom-[${value * 100}%]`}
                         />
                       </React.Fragment>
                     );

@@ -23,7 +23,7 @@ export const OTPInput = ({
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     const value = e.target.value.replace(/\D/g, ""); // Only allow numbers
     if (!value) return;
@@ -40,7 +40,7 @@ export const OTPInput = ({
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     if (
       e.key === "Backspace" &&
@@ -57,6 +57,7 @@ export const OTPInput = ({
       {Array.from({ length }).map((_, index) => (
         <input
           key={index}
+          aria-label={`Digit ${index + 1} of verification code`}
           ref={(el) => {
             inputRefs.current[index] = el;
           }}
