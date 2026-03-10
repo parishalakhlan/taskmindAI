@@ -95,7 +95,7 @@ export default function ProfilePage() {
 
     try {
       console.log("entered update try block");
-      const res = await fetch(`http://localhost:5000/api/profile/basic`, {
+      const res = await fetch(`${backendUrl}/api/profile/basic`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -155,21 +155,18 @@ export default function ProfilePage() {
     setChangingPassword(true);
 
     try {
-      const res = await fetch(
-        "http://localhost:5000/api/v1/auth/change-password",
-        {
-          method: "PATCH",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          credentials: "include",
-          body: JSON.stringify({
-            currentPassword,
-            newPassword,
-          }),
+      const res = await fetch(`${backendUrl}/api/v1/auth/change-password`, {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-      );
+        credentials: "include",
+        body: JSON.stringify({
+          currentPassword,
+          newPassword,
+        }),
+      });
 
       const data = await res.json();
 
