@@ -27,7 +27,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Middleware
 const allowedOrigins = [
-  "https://taskmind-ai-one.vercel.app", // deployed frontend
+  "https://taskmind-ai-one.vercel.app",
+  "http://localhost:3000", // deployed frontend
 ];
 app.use(
   cors({
@@ -46,7 +47,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 app.use(cookieParser());
-app.use("/api/v1/nlp", require("./routes/nlpRoutes"));
+
 // Health check route
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -58,7 +59,7 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/api/v1/auth", authRoutes);
-app.use("/api/v1/ai", aiRoutes);
+app.use("/api/v1/tasks", aiRoutes);
 
 app.use("/api/v1/tasks", authMiddleware, taskRoutes); // Protect tasks
 app.use("/api/profile", profileRoutes);

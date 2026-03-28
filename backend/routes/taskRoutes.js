@@ -8,12 +8,12 @@ console.log("Task routes loaded");
 router.use(authMiddleware); // ✅ This adds auth to all routes below this line
 console.log("AI routes loaded");
 router.post(
-  "/tasks/suggest",
+  "/suggest",
   (req, res, next) => {
     console.log("AI suggest route hit!");
     next();
   },
-  taskController.getTaskSuggestions
+  taskController.getTaskSuggestions,
 );
 router
   .route("/")
@@ -26,7 +26,6 @@ router
   .patch(taskController.updateTask)
   .delete(taskController.deleteTask);
 
-router.post("/tasks/suggest", taskController.getTaskSuggestions);
 module.exports = router;
 
 router.patch("/:id/toggle-completion", taskController.toggleTaskCompletion);

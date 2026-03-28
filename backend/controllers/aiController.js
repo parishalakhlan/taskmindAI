@@ -1,66 +1,54 @@
-const ollama = require("../services/ollamaService");
-const Task = require("../models/taskModel");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 exports.getTaskSuggestions = async (req, res) => {
   try {
-    console.log("AI suggestions function hit!");
-    console.log("Request body:", req.body);
-
     const { title } = req.body;
 
-    if (!title) {
-      return res.status(400).json({
-        status: "error",
-        message: "Task title is required for suggestions",
-      });
+    if (!title || !title.trim()) {
+      return res.status(400).json({ error: "Title is required" });
     }
 
-    // Get AI suggestions based on form input
-    const suggestions = await ollama.suggestTasks([title]);
-
-    res.json({
-      status: "success",
-      data: {
-        suggestions: suggestions,
-      },
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash", // fast + free
     });
-  } catch (err) {
-    console.error("Error in getTaskSuggestions:", err);
-    res.status(503).json({
-      status: "error",
-      message: err.message,
-      suggestion: "Try again in 30 seconds",
-    });
-  }
-};
-exports.getTaskSuggestionsStream = async (req, res) => {
-  try {
-    console.log("AI streaming function hit!");
-    const { title, description, priority } = req.body;
 
-    if (!title) {
-      return res.status(400).json({
-        status: "error",
-        message: "Task title is required for suggestions",
-      });
+    const prompt = `Task: ${title}
+
+Return EXACTLY 3 bullet points.
+
+Each bullet:
+- max 8 words
+- actionable step
+
+No extra text.`;
+
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const text = response.text();
+
+    let suggestions = text
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0)
+      .slice(0, 3)
+      .map((line) => ({
+        title: line.replace(/^[-•\d.\s]+/, ""),
+      }));
+
+    // fallback
+    if (suggestions.length === 0) {
+      suggestions = [
+        { title: "Break task into smaller steps" },
+        { title: "Start with the easiest step" },
+        { title: "Review and complete task" },
+      ];
     }
 
-    // Set headers for SSE
-    res.writeHead(200, {
-      "Content-Type": "text/event-stream",
-      "Cache-Control": "no-cache",
-      Connection: "keep-alive",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Headers": "Cache-Control",
-    });
-
-    const prompt = `Based on this task: "${title}" , suggest 3 related sub-tasks as JSON array: [{"title": "..."}]`;
-
-    // Use the existing streamGenerate method
-    await ollama.streamGenerate(prompt, res);
-  } catch (err) {
-    console.error("Error in streaming suggestions:", err);
-    res.write("event: error\ndata: AI request failed\n\n");
-    res.end();
+    res.json(suggestions);
+  } catch (error) {
+    console.error("Gemini ERROR:", error);
+    res.status(500).json({ error: "AI failed" });
   }
 };

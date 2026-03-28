@@ -16,6 +16,6 @@ router.use(express.json());
 router.use(authMiddleware);
 router.use(aiLimiter);
 
-router.post("/tasks/suggest", aiController.getTaskSuggestions); // ✅ POST
-router.post("/tasks/suggest-stream", aiController.getTaskSuggestionsStream);
+router.post("/suggest", aiController.getTaskSuggestions); // ✅ POST
+
 module.exports = router;

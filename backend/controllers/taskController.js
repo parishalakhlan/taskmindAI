@@ -1,7 +1,7 @@
 const { TaskModel: Task } = require("../models/taskModel");
 const AppError = require("../utils/appError");
 
-const ollama = require("../services/ollamaService");
+const { getTaskSuggestions } = require("./aiController");
 
 const handleNotFound = (task, res) => {
   if (!task) {
@@ -21,15 +21,14 @@ exports.createTask = async (req, res, next) => {
 
     // 3. Process AI suggestions if requested
     let aiResponse = null;
+
     if (req.body.includeAISuggestions) {
       try {
-        aiResponse = await ollama.suggestTasks([req.body.title]);
-        console.log("AI suggestions generated", { suggestions: aiResponse });
-      } catch (aiError) {
-        console.log("AI suggestion failed", { error: aiError.message });
+        aiResponse = await getTaskSuggestions(req.body.title);
+      } catch (err) {
+        console.log("AI failed:", err.message);
       }
     }
-
     // 4. Create the task
     const newTask = await Task.create({
       ...req.body,
@@ -42,7 +41,6 @@ exports.createTask = async (req, res, next) => {
       status: "success",
       data: {
         task: newTask,
-        ...(aiResponse && { aiSuggestions: aiResponse }),
       },
     });
   } catch (err) {
