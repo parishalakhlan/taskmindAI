@@ -326,7 +326,7 @@ export const TaskProvider: React.FC<TaskProviderProps> = ({ children }) => {
       });
 
       const data = await res.json();
-      const suggestions = data.data;
+      const suggestions = data.data.suggestions;
 
       if (Array.isArray(suggestions) && suggestions.length > 0) {
         return suggestions;

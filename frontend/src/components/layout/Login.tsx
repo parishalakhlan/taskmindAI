@@ -1,27 +1,22 @@
 "use client";
 import React, { useState } from "react";
-import { Mail, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/hooks/useAuth";
 import { motion } from "framer-motion";
+// Make sure to install react-icons if you haven't: npm install react-icons
 import { FaGoogle } from "react-icons/fa";
 
-// Main login form component
 export const Login = () => {
-  // State to manage input values and password visibility
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+
   const router = useRouter();
   const { login } = useAuth();
-  const [showPassword, setShowPassword] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
 
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       await login(email, password);
       console.log("Login successful, redirecting...");
@@ -37,172 +32,129 @@ export const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900 font-sans px-1.5 sm:px-4">
-      <div
-        className="
-    w-full
-    max-w-sm sm:max-w-md
-    bg-white
-    rounded-xl
-    shadow-2xl
-    p-5 sm:p-6 md:p-8
-    space-y-4 sm:space-y-5
-  "
-      >
-        {/* Header with icon and text */}
+    // The background is a light cream color to match the design
+    <div className="relative min-h-screen w-full flex flex-col items-center justify-center bg-[#fcfbf7] p-4 font-sans">
+      {/* Decorative Background Elements (Optional: Replace with your actual SVG illustrations later) */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+        {/* Rotating ring */}
         <motion.div
-          className="flex flex-col items-center justify-center space-y-3 sm:space-y-4"
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
-          <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 text-center">
-            Welcome back
+          className="absolute top-20 left-20 w-32 h-32 border-2 border-black border-dashed opacity-10 rounded-full"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        />
+
+        {/* Pulsing blob */}
+        <motion.div
+          className="absolute bottom-20 right-20 w-48 h-48 bg-[#f4c892] opacity-40 rounded-sm"
+          animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
+          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+        />
+
+        {/* Extra: drifting triangle */}
+        <motion.div
+          className="absolute top-1/2 left-1/3 w-24 h-24 bg-gradient-to-br from-orange-200 to-amber-300 opacity-30 rounded-full blur-xl"
+          animate={{ x: [0, 30, -20, 0], y: [0, -20, 10, 0] }}
+          transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+        />
+      </div>
+
+      {/* Main Login Card */}
+      <div className="relative z-10 w-full max-w-[420px] bg-white rounded-[2rem] shadow-[0_8px_30px_rgb(0,0,0,0.04)] p-8 sm:p-10 border border-gray-100">
+        {/* Header section */}
+        <div className="text-center mb-8">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+            Agent Login
           </h1>
-          <p className="text-xs sm:text-sm text-gray-500 text-center">
-            Sign in with Google
-          </p>
-        </motion.div>
-
-        {/* Social login buttons */}
-        <div className="flex justify-center">
-          {" "}
-          {/* Centers horizontally */}
-          <button
-            className="flex items-center justify-center p-2 sm:p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-200"
-            aria-label="Sign in with Google"
-          >
-            <FaGoogle className="text-gray-600 w-5 h-5 sm:w-6 sm:h-6" />
-          </button>
-        </div>
-
-        {/* Separator */}
-        <div className="relative my-4 flex flex-col gap-y-4">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-gray-300"></span>
-          </div>
-          <div className="relative flex justify-center text-sm">
-            <span className="bg-white px-2 text-gray-500">or</span>
-          </div>
-          <p className="text-gray-500 text-sm text-center">
-            Please enter your details to sign in
+          <p className="text-sm text-gray-500 leading-relaxed">
+            Hey, Enter your details to get sign in
+            <br />
+            to your account
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-          {/* Email input field */}
-          <div>
-            <label
-              htmlFor="email"
-              className="block text-sm font-medium text-gray-700"
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Email / Phone Input */}
+          <div className="relative">
+            <input
+              type="text"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="block w-full rounded-lg border border-gray-200 px-4 py-3.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-400 focus:ring-0 focus:outline-none"
+              placeholder="Enter Email"
+              required
+            />
+            {/* Empty circle icon from design */}
+            <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+              <div className="w-4 h-4 rounded-full border border-gray-300"></div>
+            </div>
+          </div>
+
+          {/* Password Input */}
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="block w-full rounded-lg border border-gray-200 px-4 py-3.5 text-sm text-gray-900 placeholder-gray-400 focus:border-gray-400 focus:ring-0 focus:outline-none"
+              placeholder="Passcode"
+              required
+            />
+            <button
+              type="button"
+              className="absolute inset-y-0 right-4 flex items-center text-xs font-semibold text-gray-600 hover:text-gray-900"
+              onClick={() => setShowPassword(!showPassword)}
             >
-              Email address
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <input
-                type="email"
-                id="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className=" block w-full 
-    rounded-md 
-    border-gray-300 
-    px-3 py-2 sm:py-3
-    text-sm sm:text-base
-    focus:border-rose-500 
-    focus:ring-rose-500"
-                placeholder="Enter your email"
-                required
-              />
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-              </div>
-            </div>
+              {showPassword ? "Show" : "Hide"}
+            </button>
           </div>
 
-          {/* Password input field */}
-          <div>
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700"
+          {/* Trouble signing in? */}
+          <div className="pt-1 pb-4 text-left">
+            <a
+              href="#"
+              className="text-xs sm:text-sm text-gray-600 hover:text-gray-900 font-medium"
             >
-              Password
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <input
-                type={showPassword ? "text" : "password"}
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="  block w-full 
-    rounded-md 
-    border-gray-300 
-    px-3 py-2 sm:py-3
-    text-sm sm:text-base
-    focus:border-rose-500 
-    focus:ring-rose-500"
-                placeholder="Enter your password"
-                required
-              />
-              <div
-                className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? (
-                  <EyeOff className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-                ) : (
-                  <Eye className="h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
-                )}
-              </div>
-            </div>
+              Having trouble in sign in?
+            </a>
           </div>
 
-          {/* Remember me and forgot password section */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <input
-                id="remember-me"
-                name="remember-me"
-                type="checkbox"
-                checked={rememberMe}
-                onChange={(e) => setRememberMe(e.target.checked)}
-                className="h-4 w-4 text-rose-600 focus:ring-rose-500 border-gray-300 rounded"
-              />
-              <label
-                htmlFor="remember-me"
-                className="ml-2 block text-sm text-gray-900"
-              >
-                Remember for 30 days
-              </label>
-            </div>
-            <div className="text-sm">
-              <a
-                href="#"
-                className="font-medium text-rose-500 hover:text-rose-700"
-              >
-                Forgot password?
-              </a>
-            </div>
-          </div>
-
-          {/* Sign in button */}
-
+          {/* Submit Button */}
           <button
             type="submit"
-            className="w-full flex justify-center py-2 sm:py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-rose-500 hover:bg-rose-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-rose-500 transition-colors"
+            className="w-full py-3.5 px-4 rounded-lg text-sm font-semibold text-gray-900 bg-[#f4c892] hover:bg-[#ebbb81] transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#f4c892]"
           >
             Sign in
           </button>
         </form>
 
-        {/* Create account link */}
-        <div className="text-center text-sm text-gray-500 mt-5">
-          {"Don't have an account? "}
+        {/* Divider */}
+        <div className="my-6 flex items-center justify-center">
+          <span className="text-gray-400 text-xs sm:text-sm">
+            — Or Sign in with —
+          </span>
+        </div>
+
+        {/* Social Logins */}
+        <div className="grid place-items-center mb-8">
+          <button
+            type="button"
+            className="flex items-center justify-center py-2.5 px-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <FaGoogle className="w-4 h-4 mr-2" />
+            <span className="text-xs font-semibold text-gray-700">Google</span>
+          </button>
+        </div>
+
+        {/* Footer Link */}
+        <div className="text-center text-xs sm:text-sm text-gray-500">
+          {" Don't have an account? "}
           <Link
             href="/signup"
-            className="font-medium text-rose-500 hover:text-rose-700"
+            className="font-bold text-gray-900 hover:underline"
           >
-            Create account
+            Request Now
           </Link>
         </div>
       </div>

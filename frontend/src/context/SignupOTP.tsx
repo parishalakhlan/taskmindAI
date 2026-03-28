@@ -47,8 +47,6 @@ export const SignupOTP: React.FC<SignupOTPProps> = ({
         password: signupData.password,
       };
 
-      console.log("Sending OTP with data:", requestData); // Debug log
-
       const response = await fetch(
         `${backendUrl}/api/v1/auth/send-signup-otp`,
         {
@@ -61,7 +59,6 @@ export const SignupOTP: React.FC<SignupOTPProps> = ({
       );
 
       const data = await response.json();
-      console.log("OTP Response:", data); // Debug log
 
       if (!response.ok) {
         throw new Error(data.message || "Failed to send OTP");

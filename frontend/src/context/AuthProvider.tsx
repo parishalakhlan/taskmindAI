@@ -37,14 +37,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   // Check for existing authentication on mount
   useEffect(() => {
     const checkAuthStatus = async () => {
-      console.log("checkAuthStatus running...");
-      console.log("Token from state:", token);
-
       try {
         // If we have a token in state, verify it
         if (token) {
-          console.log("Verifying token with backend...");
-
           const response = await fetch(`${backendUrl}/api/v1/auth/check-auth`, {
             method: "GET",
             headers: {
@@ -57,7 +52,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
             const userData = await response.json();
             setUser(userData.user);
             setIsAuthenticated(true);
-            console.log("Token verified, user authenticated");
           } else {
             // Token is invalid, clear it
             console.log("Token invalid, clearing...");
@@ -69,7 +63,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           }
         } else {
           // No token, not authenticated
-          console.log("No token found, user not authenticated");
+
           setIsAuthenticated(false);
         }
       } catch (error) {
@@ -89,7 +83,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const login = async (email: string, password: string): Promise<void> => {
     setLoading(true);
-    console.log("Login attempt for:", email);
 
     try {
       const response = await fetch(`${backendUrl}/api/v1/auth/login`, {
@@ -100,15 +93,12 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         body: JSON.stringify({ email, password }),
       });
 
-      console.log("Login response status:", response.status);
-
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Login failed");
       }
 
       const data = await response.json();
-      console.log("Login successful, received data:", data);
 
       // Store token and user data
       localStorage.setItem("authToken", data.token);
@@ -118,8 +108,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setToken(data.token);
       setUser(data.user);
       setIsAuthenticated(true);
-
-      console.log("Auth state updated, token set:", data.token);
     } catch (error) {
       console.error("Login error:", error);
       throw error;
@@ -129,7 +117,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   const logout = (): void => {
-    console.log("Logging out...");
     localStorage.removeItem("authToken");
     localStorage.removeItem("user");
     setToken(null);
@@ -145,8 +132,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     login,
     logout,
   };
-
-  console.log("AuthProvider state:", { user, token, loading, isAuthenticated }); // Add this
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
