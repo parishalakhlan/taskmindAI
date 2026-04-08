@@ -12,6 +12,7 @@ const taskSchema = new mongoose.Schema({
     trim: true,
     maxlength: [500, "Description cannot exceed 500 characters"],
   },
+
   deadline: {
     // Changed from dueDate to deadline
     type: Date,
@@ -53,6 +54,14 @@ const taskSchema = new mongoose.Schema({
     ref: "User",
     required: [true, "Task must belong to a user"],
   },
+  // Add to your existing Task schema
+  boardId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Board",
+    default: null,
+  }, // which board this task belongs to
+  columnId: { type: String, default: null }, // which column (by column.id)
+  order: { type: Number, default: 0 }, // position within the column
 });
 
 // Update the updatedAt field before saving

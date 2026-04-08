@@ -13,6 +13,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@google/generative-ai": "^0.24.1",
     "axios": "^1.10.0",
     "bcryptjs": "^3.0.2",
     "cloudinary": "^1.37.0",
@@ -24,6 +25,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.1",
+    "mongoose-update-if-current": "^1.4.0",
     "morgan": "^1.10.0",
     "multer": "^2.0.1",
     "multer-storage-cloudinary": "^4.0.0",

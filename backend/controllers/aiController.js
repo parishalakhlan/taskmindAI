@@ -11,16 +11,13 @@ exports.getTaskSuggestions = async (req, res) => {
     }
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-1.5-flash", // fast + free
+      model: "gemini-3-flash-preview", // fast + free
     });
 
     const prompt = `Task: ${title}
 
-Return EXACTLY 3 bullet points.
 
-Each bullet:
-- max 8 words
-- actionable step
+ 3 steps, ≤6 words each. Plain text, no symbols, no markdown.
 
 No extra text.`;
 
@@ -34,7 +31,8 @@ No extra text.`;
       .filter((line) => line.length > 0)
       .slice(0, 3)
       .map((line) => ({
-        title: line.replace(/^[-•\d.\s]+/, ""),
+        // Remove leading asterisks, dashes, numbers, and spaces
+        title: line.replace(/^[-•*\d.\s]+/, "").trim(),
       }));
 
     // fallback

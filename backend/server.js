@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
+const boardRoutes = require("./routes/boardRoutes");
 
 // Load environment variables
 dotenv.config();
@@ -47,7 +48,7 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 app.use(cookieParser());
-
+app.use("/api/boards", boardRoutes);
 // Health check route
 app.get("/", (req, res) => {
   res.status(200).json({
